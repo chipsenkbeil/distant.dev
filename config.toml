@@ -14,9 +14,9 @@ highlight_code = true
 highlight_theme = "inspired-github"
 
 [extra]
-juice_logo_name = "Distant"
-juice_logo_path = "distant.svg"
-juice_extra_menu = [
+distant_logo_name = "Distant"
+distant_logo_path = "distant.svg"
+distant_extra_menu = [
     { title = "Github", link = "https://github.com/chipsenkbeil/distant" }
 ]
 repository_url = "https://github.com/chipsenkbeil/distant"

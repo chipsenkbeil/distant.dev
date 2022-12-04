@@ -11,7 +11,7 @@ Built by [Huhu.io](https://huhu.io), adopted by a several product sites.
 
 # Logo
 
-![](/juice.svg)
+![](/distant.svg)
 
 # Zola
 

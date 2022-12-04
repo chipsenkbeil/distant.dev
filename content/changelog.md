@@ -33,7 +33,7 @@ weight = 2
  
 # v0.2.0 - 2020-06-28
 
-- Add extra juice_extra_menu config.
+- Add extra distant_extra_menu config.
 - Add color customization CSS variables.
 - Improve docs and blockquote style.
 - Support customize logo and name.

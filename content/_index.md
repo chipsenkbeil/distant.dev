@@ -21,18 +21,18 @@ First download this theme to your `themes` directory:
 
 ```bash
 $ cd themes
-$ git clone https://github.com/huhu/juice.git
+$ git clone https://github.com/huhu/distant.git
 ```
 
 or add as a submodule
 ```bash
-$ git submodule add https://github.com/huhu/juice  themes/juice
+$ git submodule add https://github.com/huhu/distant  themes/distant
 ```
 
 and then enable it in your `config.toml`:
 
 ```toml
-theme = "juice"
+theme = "distant"
 ```
 
 # Structure
@@ -43,7 +43,7 @@ theme = "juice"
 You can customize your **hero** by using `hero` block in the `templates/index.html`.
 
 ```html
-{% extends "juice/templates/index.html" %}
+{% extends "distant/templates/index.html" %}
 {% block hero %}
     <div>
         Your cool hero html...
@@ -91,7 +91,7 @@ You can override theme variable by creating a file named `_variables.html` in yo
 ### Favicon
 
 ```html
-{% extends "juice/templates/index.html" %}
+{% extends "distant/templates/index.html" %}
 {% block favicon %}
     <link rel="icon" type="image/png" href="/favicon.ico">
 {% endblock favicon %}
@@ -103,19 +103,19 @@ You can customize some builtin property in `config.toml` file:
 
 ```toml
 [extra]
-juice_logo_name = "Juice"
-juice_logo_path = "juice.svg"
-juice_extra_menu = [
-    { title = "Github", link = "https://github.com/huhu/juice"}
+distant_logo_name = "Juice"
+distant_logo_path = "distant.svg"
+distant_extra_menu = [
+    { title = "Github", link = "https://github.com/huhu/distant"}
 ]
-repository_url = "https://github.com/huhu/juice"
+repository_url = "https://github.com/huhu/distant"
 ```
 
 # Shortcodes
 
 **Juice** have some builtin shortcodes available in `templates/shortcodes` directory. 
 
-- `issue(id)` - A shortcode to render issue url, e.g. `issue(id=1)` would render to the link `https://github.com/huhu/juice/issue/1`.
+- `issue(id)` - A shortcode to render issue url, e.g. `issue(id=1)` would render to the link `https://github.com/huhu/distant/issue/1`.
   
 > The `repository_url` is required.
 

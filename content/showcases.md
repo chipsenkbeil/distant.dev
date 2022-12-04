@@ -10,13 +10,13 @@ If you use **Juice** as your theme, feel free to make Pull request.
 
 Here are some steps to help you get started:
  
-- Change the [content/showcases.md](https://github.com/huhu/juice/blob/master/content/showcases.md) file, add your product site. Make sure the lexicographical order.
+- Change the [content/showcases.md](https://github.com/huhu/distant/blob/master/content/showcases.md) file, add your product site. Make sure the lexicographical order.
 - Add a link to your product site.
 
 # Gallery
 
 Here are some product websites which use **Juice** as the theme.
-Sort by lexicographical order. For more showcases, please visit [here](https://github.com/search?l=&p=1&q=theme+%3D+%22juice%22+filename%3Aconfig.toml&ref=advsearch&type=Code).
+Sort by lexicographical order. For more showcases, please visit [here](https://github.com/search?l=&p=1&q=theme+%3D+%22distant%22+filename%3Aconfig.toml&ref=advsearch&type=Code).
 
 ## Acton Lang
 
