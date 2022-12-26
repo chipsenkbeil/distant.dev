@@ -1,6 +1,6 @@
 +++
 title = "Distant"
-sort_by = "weight"
+is_search_index = false
 +++
 
 # Distant
