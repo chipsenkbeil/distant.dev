@@ -4,40 +4,23 @@ description = "Overview"
 weight = 1
 +++
 
-## What is distant? 
+Distant is a collection of tooling and libraries to support working with remote
+machines. In its simplest form, there is a client and server where you run the
+client on your local machine and the server on a remote machine. A TCP
+connection is established between the client and server, and from there you are
+able to edit files and run programs on the remote machine.
 
-## Installation
+* Reading, writing, and querying a remote filesystem
+  * File IO
+  * Directory IO
+  * Search
+* Executing and managing processes on the remote machine
+  * Run programs, writing to their stdin, and reading from their stdout/stderr
+  * Spawn shells using a PTY
 
-The `distant` CLI is monolithic, meaning that all features are
+The distant cli is monolithic, meaning that all features are
 contained in a single binary. This means that you do not need to install
 a different program to run the client, server, or manager. You also do not need
-to worry about having different shared libraries (`.so`) or DLLs (`.dll`)
+to worry about having different shared libraries (.so) or DLLs (.dll)
 available on your system to run distant.
 
-### Prebuilt Binaries
-
-Out of the box, the distant CLI is available on the following platforms:
-
-- Windows (x86)
-- MacOS (x86 & aarch64)
-- Linux GNU (x86, aarch64, armv7)
-- Linux MUSL (x86, aarch64)
-
-You can download any of the above binaries for the appropriate platform and not
-need to worry about compiling source code or even having the Rust compiler on
-your system!
-
-If you would like a pre-built binary, check out the 
-[releases section](https://github.com/chipsenkbeil/distant/releases).
-
-### Via `cargo install`
-
-If you have [cargo](https://github.com/rust-lang/cargo) installed, you can
-directly download and build the most recent release via:
-
-```bash
-cargo install distant
-```
-
-Alternatively, you can clone this repository and build from source following
-the [build guide](./BUILDING.md).

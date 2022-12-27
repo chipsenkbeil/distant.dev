@@ -2,7 +2,7 @@
   padding: 0 40px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  /* justify-content: center; */
   overflow-x: auto;
 }
 
@@ -12,16 +12,16 @@
   white-space: pre;
   word-wrap: normal;
   /* background-color: white; */
-  background-color: rgb(176, 204, 195);
-  color: #4a4a4a;
+  background-color: var(--inline-code-block-background-color);
+  color: var(--inline-code-block-text-color);
   font-size: .875em;
   font-family: monospace;
 }
 
 .content code {
   /* background-color: white; */
-  background-color: rgb(176, 204, 195);
-  color: #4a4a4a;
+  background-color: var(--inline-code-block-background-color);
+  color: var(--inline-code-block-text-color);
   font-size: .875em;
   font-weight: normal;
   /* padding: 0.25em 0.5em; */
@@ -35,6 +35,7 @@
 
 .content pre>code, .content h2>code {
   background-color: unset;
+  color: unset;
 }
 
 .content a {
