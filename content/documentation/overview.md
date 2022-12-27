@@ -4,9 +4,9 @@ description = "Overview"
 weight = 1
 +++
 
-# What is distant? 
+## What is distant? 
 
-# Installation
+## Installation
 
 The `distant` CLI is monolithic, meaning that all features are
 contained in a single binary. This means that you do not need to install
@@ -14,7 +14,7 @@ a different program to run the client, server, or manager. You also do not need
 to worry about having different shared libraries (`.so`) or DLLs (`.dll`)
 available on your system to run distant.
 
-## Prebuilt Binaries
+### Prebuilt Binaries
 
 Out of the box, the distant CLI is available on the following platforms:
 
@@ -30,7 +30,7 @@ your system!
 If you would like a pre-built binary, check out the 
 [releases section](https://github.com/chipsenkbeil/distant/releases).
 
-## Via `cargo install`
+### Via `cargo install`
 
 If you have [cargo](https://github.com/rust-lang/cargo) installed, you can
 directly download and build the most recent release via:

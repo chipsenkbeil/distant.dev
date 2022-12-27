@@ -1,12 +1,30 @@
+h1 {
+  font-family: "Fira Sans", sans-serif;
+  font-size: 32px;
+  font-weight: 600;
+  color: var(--primary-text-color);
+  padding: 10px 0 10px 0;
+}
+
+h2 {
+  font-family: "Fira Sans", sans-serif;
+  font-weight: 500;
+  color: var(--primary-text-color);
+  font-size: 25px;
+  padding-left: 10px;
+  border-left: var(--primary-color) 8px solid;
+}
+
 .heading-text {
   font-family: "Fira Sans", sans-serif;
   font-size: 32px;
   font-weight: 600;
   padding: 10px 0 25px 0;
   color: var(--primary-text-color);
+  border-left: none;
 }
 
-h1, .title-text {
+.title-text {
   font-family: "Fira Sans", sans-serif;
   font-size: 25px;
   font-weight: 500;
@@ -15,7 +33,7 @@ h1, .title-text {
   padding-left: 10px;
 }
 
-h2, .subtitle-text {
+h3, .subtitle-text {
   font-family: "Fira Sans", sans-serif;
   font-size: 20px;
   font-weight: 500;
@@ -36,4 +54,31 @@ h2, .subtitle-text {
   font-size: 16px;
   font-weight: 400;
   letter-spacing: 0.1px;
+}
+
+.subtitle-date {
+  font-family: "Fira Sans", sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--secondary-text-color);
+}
+
+.content h3 {
+  margin: 0;
+  padding: 5px 0 10px 0;
+}
+
+.content h3+p {
+  margin: 5px 0 18px 0;
+}
+
+.pager_links {
+  text-align: center;
+  width: fit-content;
+  padding: 40px;
+}
+
+.text.content.documentation p {
+  margin-top: 8px;
+  margin-bottom: 10px;
 }

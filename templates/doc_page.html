@@ -27,7 +27,7 @@
 
 <body>
     {% block header %}
-    <header class="pos-absolute" style="background-color: transparent">
+    <header class="box-shadow">
         {{ macros::render_header() }}
     </header>
     {% endblock header %}
@@ -54,7 +54,7 @@
 
         <div class="content text documentation">
             {% block content %}
-            <h1>{{ page.title }}<br /><span class="subtitle-date">{{ page.date }}</span></h1>
+            <h1>{{ page.title }}<br/><span class="subtitle-date">{{ page.date }}</span></h1>
             {{ page.content | safe }}
             {% endblock content %}
         </div>

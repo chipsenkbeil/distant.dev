@@ -1,8 +1,7 @@
 +++
 title = "About"
-sort_by = "weight"
-is_search_index = false
-page_template = "page.html"
+description = "About"
+weight = 1
 +++
 
 Distant is a collection of tooling and libraries to support working with remote
@@ -21,4 +20,4 @@ and other utilities. The purpose is to reduce complexity - needing multiple
 different binaries - as well as increase the likelihood that you as a user have
 everything you need to work with remote machines successfully.
 
-# Architecture
+## Architecture
