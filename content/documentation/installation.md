@@ -1,7 +1,7 @@
 +++
 title = "Installation"
 description = "Installation"
-weight = 2
+weight = 3
 +++
 
 ## Prebuilt Binaries

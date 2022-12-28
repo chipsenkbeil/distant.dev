@@ -1,7 +1,7 @@
 +++
 title = "Examples"
 description = "Examples"
-weight = 3
+weight = 4
 +++
 
 ## Starting the manager
