@@ -8,7 +8,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3.0.0
       - name: Build and Deploy
-        uses: shalzz/zola-deploy-action@v0.16.1
+        uses: shalzz/zola-deploy-action@main
         env:
           PAGES_BRANCH: gh-pages
           TOKEN: ${{ secrets.GITHUB_TOKEN }}
