@@ -1,1 +1,1 @@
-Source code for https://distant.rocks
+Source code for https://distant.dev
