@@ -24,12 +24,12 @@ similar tooling like ssh.
 
         Maybe width:80%, max-width:800px, min-width:250px
 -->
-![Single Direct Connection](/images/architecture/single-direct-connection.png)
+![Single Direct Connection][Single Direct Connection]
 
 Following this model, multiple connections to a server would result in multiple
 TCP connections. This is the traditional client/server model.
 
-![Multiple Direct Connection](/images/architecture/multiple-direct-connection.png)
+![Multiple Direct Connection][Multiple Direct Connection]
 
 The distant cli provides a manager, used by default, to facilitate and
 coordinate connections with clients. On Unix systems, the manager listens on a
@@ -37,7 +37,7 @@ coordinate connections with clients. On Unix systems, the manager listens on a
 on Windows the manager listens using a [Named
 Pipe](https://learn.microsoft.com/en-us/windows/win32/ipc/named-pipes).
 
-![Manager w/ Unix Domain Socket](/images/architecture/manager-uds.png)
+![Manager w/ Unix Domain Socket][Manager w/ Unix Domain Socket]
 
 ## Establishing connections
 
@@ -60,7 +60,7 @@ three primary steps that distant takes to fully configure a connection:
    with the server, and results in a more reliable connect to the user (you)
    where any network glitches will be repaired by distant.
 
-![Establish a Connection](/images/architecture/establish-a-connection.png)
+![Establish a Connection][Establish a Connection]
 
 ## Deriving a codec
 
@@ -92,7 +92,7 @@ for the established connection.
    [HMAC](https://en.wikipedia.org/wiki/HMAC)-[SHA256](https://en.wikipedia.org/wiki/SHA-2)
    hash function.
 
-![Derive codec](/images/architecture/derive-codec.png)
+![Derive codec][Derive codec]
 
 ## Authenticating
 
@@ -128,7 +128,7 @@ machine-local passphrases, public key authentication, and more.
    authentication methods will be started and no additional challenges,
    verification requests, information, or errors will be sent.
 
-![Authenticate with server](/images/architecture/authenticate-with-server.png)
+![Authenticate with server][Authenticate with server]
 
 ## Re-establishing connection
 
@@ -139,7 +139,7 @@ derive a shared [one-time password
 re-establishing a connection to avoid needing to provide full
 re-authentication.
 
-![Establish New Connection](/images/architecture/establish-new-connection.png)
+![Establish New Connection][Establish New Connection]
 
 With an existing connection, the process is a bit different. When first
 connecting, after deriving the codec, the client will tell the server that it
@@ -170,4 +170,13 @@ The replay logic follows this process:
 4. Both client and server will wait to receive N missing frames up to the
    available count from the other side.
 
-![Re-establish connection](/images/architecture/reestablish-connection.png)
+![Re-establish connection][Re-establish connection]
+
+[Single Direct Connection]:      /assets/images/architecture/single-direct-connection.png
+[Multiple Direct Connection]:    /assets/images/architecture/multiple-direct-connection.png
+[Manager w/ Unix Domain Socket]: /assets/images/architecture/manager-uds.png
+[Establish a Connection]:        /assets/images/architecture/establish-a-connection.png
+[Derive codec]:                  /assets/images/architecture/derive-codec.png
+[Authenticate with server]:      /assets/images/architecture/authenticate-with-server.png
+[Establish New Connection]:      /assets/images/architecture/establish-new-connection.png
+[Re-establish connection]:       /assets/images/architecture/reestablish-connection.png
