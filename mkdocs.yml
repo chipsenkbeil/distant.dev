@@ -1,0 +1,31 @@
+# yaml-language-server: $schema=https://squidfunk.github.io/mkdocs-material/schema.json
+site_name: Distant
+site_url: https://distant.dev
+repo_url: https://github.com/chipsenkbeil/distant
+site_description: Website for distant and distant.nvim
+site_author: Chip Senkbeil
+copyright: Chip Senkbeil © 2023
+
+nav:
+  - Homepage: 'index.md'
+  - About:
+    - 'about/overview.md'
+    - 'about/features.md'
+    - 'about/architecture.md'
+  - Getting Started:
+    - 'getting-started/installation.md'
+  - Reference:
+    - 'reference/examples.md'
+
+theme:
+  name: material
+  favicon: assets/favicon.png
+  logo: assets/logo.svg
+  features:
+    - navigation.expand
+    - navigation.instant
+    - navigation.tabs
+    - navigation.tracking
+
+plugins:
+  - search
