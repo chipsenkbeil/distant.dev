@@ -61,10 +61,14 @@
       left: 5em;
       bottom: 5em;
       z-index: 1000;
+      max-width: 16rem;
     }
 
     .md-hero-quickstart-box h1 {
       color: white;
+      font-weight: 700 !important;
+      margin-bottom: 0;
+      letter-spacing: -0.01em;
     }
 
     .md-hero-quickstart-box p {
@@ -85,7 +89,7 @@
         </div>
         <div class="mdx-hero__content md-hero-quickstart-box">
           <h1>Work from a distance</h1>
-          <p>{{ config.site_description }}.</p>
+          <p>{{ config.site_description }}. Deploy distant on your server and connect today to begin remote work!</p>
           <a
             href="{{ page.next_page.url | url }}"
             title="{{ page.next_page.title | e }}"
