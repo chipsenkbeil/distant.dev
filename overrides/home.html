@@ -1,0 +1,103 @@
+{% extends "main.html" %}
+
+<!-- Render hero under tabs -->
+{% block tabs %}
+  {{ super() }}
+
+  <!-- Additional styles for landing page -->
+  <style>
+
+    /* Prevent scrolling since this is a single screen page */
+    html, body {
+      margin: 0; 
+      height: 100%; 
+      overflow: hidden
+    }
+
+    /* Application header should be static for the landing page */
+    .md-header {
+      position: initial;
+    }
+
+    /* Remove spacing, as we cannot hide it completely */
+    .md-main__inner {
+      margin: 0;
+    }
+
+    /* Hide main content for now */
+    .md-content {
+      display: none;
+    }
+
+    /* Hide table of contents */
+    @media screen and (min-width: 60em) {
+      .md-sidebar--secondary {
+        display: none;
+      }
+    }
+
+    /* Hide navigation */
+    @media screen and (min-width: 76.25em) {
+      .md-sidebar--primary {
+        display: none;
+      }
+    }
+
+    .md-hero-background {
+      position: absolute;
+      width: 100vw;
+      height: 100vh;
+    }
+
+    /* NOTE: Important to override dimensions applied by typeset */
+    .md-hero-background-image {
+      width: 100vw !important;
+      height: 100vh !important;
+      object-fit: cover;
+    }
+
+    .md-hero-quickstart-box {
+      position: absolute;
+      left: 5em;
+      bottom: 5em;
+      z-index: 1000;
+    }
+
+    .md-hero-quickstart-box h1 {
+      color: white;
+    }
+
+    .md-hero-quickstart-box p {
+      color: white;
+    }
+  </style>
+
+  <section class="mdx-container">
+    <div class="md-typeset">
+      <div class="mdx-hero">
+        <div class="mdx-hero__image md-hero-background">
+          <img
+            class="md-hero-background-image"
+            src="assets/images/hero.png"
+            alt=""
+            draggable="false"
+          >
+        </div>
+        <div class="mdx-hero__content md-hero-quickstart-box">
+          <h1>Work from a distance</h1>
+          <p>{{ config.site_description }}. Set up in 5 minutes.</p>
+          <a
+            href="{{ page.next_page.url | url }}"
+            title="{{ page.next_page.title | e }}"
+            class="md-button md-button--primary"
+          >
+            Quick start
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock %}
+
+<!-- Application footer -->
+{% block footer %}{% endblock %}
