@@ -8,14 +8,14 @@ copyright: Chip Senkbeil © 2023
 
 nav:
   - Home: 'index.md'
-  - About:
-    - 'about/overview.md'
-    - 'about/features.md'
-    - 'about/architecture.md'
   - Getting Started:
     - 'getting-started/installation.md'
   - Reference:
     - 'reference/examples.md'
+  - About:
+    - 'about/overview.md'
+    - 'about/features.md'
+    - 'about/architecture.md'
 
 theme:
   name: material
