@@ -1,6 +1,6 @@
 ---
 template: home.html
-title: Home
+title: Distant
 ---
 
 Remote editing from the comfort of your local machine.
