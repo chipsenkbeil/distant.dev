@@ -58,13 +58,13 @@
       width: 100vw !important;
       height: 100vh !important;
       object-fit: cover;
+      z-index: -1;
     }
 
     .md-hero-quickstart-box {
       position: absolute;
       left: 5em;
       bottom: 5em;
-      z-index: 1000;
       max-width: 16rem;
     }
 
@@ -79,6 +79,23 @@
     .md-hero-quickstart-box p {
       color: white;
       text-shadow: 0 0 0.2rem #211d2dcc;
+    }
+
+    /* Center quickstart box */
+    @media screen and (max-width: 30em) {
+      .md-hero-quickstart-box {
+        left: 1em;
+        right: 1em;
+        bottom: 2em;
+        max-width: unset;
+
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        align-items: flex-start;
+
+        margin: 1em;
+      }
     }
   </style>
 
