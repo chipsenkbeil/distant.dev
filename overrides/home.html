@@ -11,7 +11,11 @@
     html, body {
       margin: 0; 
       height: 100%; 
-      overflow: hidden
+      overflow: hidden;
+
+      /* Set this so loading images won't show white by default. */
+      /* NOTE: This should match the primary color. */
+      background-color: #41ACC9;
     }
 
     /* Application header should be static for the landing page */
@@ -69,10 +73,12 @@
       font-weight: 700 !important;
       margin-bottom: 0;
       letter-spacing: -0.01em;
+      text-shadow: 0 0 0.2rem #211d2dcc;
     }
 
     .md-hero-quickstart-box p {
       color: white;
+      text-shadow: 0 0 0.2rem #211d2dcc;
     }
   </style>
 
