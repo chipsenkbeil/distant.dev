@@ -366,6 +366,7 @@ function Write-DebugInfo {
 
 function Install-Distant {
     [CmdletBinding()]
+    param()
 
     Write-InstallInfo "Initializing..."
     # Validate install parameters
