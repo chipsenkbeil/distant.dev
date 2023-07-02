@@ -345,7 +345,28 @@ function Test-CommandAvailable {
     return [Boolean](Get-Command $Command -ErrorAction SilentlyContinue)
 }
 
+function Write-DebugInfo {
+    [CmdletBinding()]
+    param($BoundArgs)
+
+    Write-Verbose "-------- PSBoundParameters --------"
+    $BoundArgs.GetEnumerator() | ForEach-Object { Write-Verbose $_ }
+    Write-Verbose "-------- Environment Variables --------"
+    Write-Verbose "`$env:LocalAppData: $env:LocalAppData"
+    Write-Verbose "`$env:ProgramData: $env:ProgramData"
+    Write-Verbose "`$env:DISTANT_DIR: $env:DISTANT_DIR"
+    Write-Verbose "`$env:DISTANT_HOST: $env:DISTANT_HOST"
+    Write-Verbose "`$env:DISTANT_VERSION: $env:DISTANT_VERSION"
+    Write-Verbose "-------- Selected Variables --------"
+    Write-Verbose "DISTANT_DIR: $DISTANT_DIR"
+    Write-Verbose "DISTANT_BIN_DIR: $DISTANT_BIN_DIR"
+    Write-Verbose "DISTANT_HOST: $DISTANT_HOST"
+    Write-Verbose "DISTANT_VERSION: $DISTANT_VERSION"
+}
+
 function Install-Distant {
+    [CmdletBinding()]
+
     Write-InstallInfo "Initializing..."
     # Validate install parameters
     Test-ValidateParameter
@@ -380,24 +401,6 @@ function Install-Distant {
     Write-InstallInfo "Type 'distant help' for instructions."
 }
 
-function Write-DebugInfo {
-    param($BoundArgs)
-
-    Write-Verbose "-------- PSBoundParameters --------"
-    $BoundArgs.GetEnumerator() | ForEach-Object { Write-Verbose $_ }
-    Write-Verbose "-------- Environment Variables --------"
-    Write-Verbose "`$env:LocalAppData: $env:LocalAppData"
-    Write-Verbose "`$env:ProgramData: $env:ProgramData"
-    Write-Verbose "`$env:DISTANT_DIR: $env:DISTANT_DIR"
-    Write-Verbose "`$env:DISTANT_HOST: $env:DISTANT_HOST"
-    Write-Verbose "`$env:DISTANT_VERSION: $env:DISTANT_VERSION"
-    Write-Verbose "-------- Selected Variables --------"
-    Write-Verbose "DISTANT_DIR: $DISTANT_DIR"
-    Write-Verbose "DISTANT_BIN_DIR: $DISTANT_BIN_DIR"
-    Write-Verbose "DISTANT_HOST: $DISTANT_HOST"
-    Write-Verbose "DISTANT_VERSION: $DISTANT_VERSION"
-}
-
 # Prepare variables
 $IS_EXECUTED_FROM_IEX = ($null -eq $MyInvocation.MyCommand.Path)
 
@@ -416,11 +419,8 @@ $DISTANT_BIN_DIR = "$DISTANT_DIR\bin"
 $oldErrorActionPreference = $ErrorActionPreference
 $ErrorActionPreference = 'Stop'
 
-# Retrieve the value of the -Verbose parameter
-$verbosePreference = $PSBoundParameters['Verbose']
-
 # Set the $VerbosePreference variable to match the value of the -Verbose parameter
-if ($verbosePreference) {
+if ($PSBoundParameters['Verbose']) {
     $VerbosePreference = 'Continue'
 }
 
