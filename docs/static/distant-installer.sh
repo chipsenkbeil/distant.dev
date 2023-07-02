@@ -93,7 +93,7 @@ main() {
 
     # Directory where distant will be installed
     local _dir
-    if $_is_root; then
+    if [ "$_is_root" -eq 0 ]; then
         # Root will store in /usr/local/bin
         _dir="/usr/local/bin"
     else
@@ -189,7 +189,7 @@ main() {
         _should_elevate="no"
 
         # If we are already root, nothing we can do
-        if $_is_root; then
+        if [ "$_is_root" -eq 0 ]; then
             err "Root does not have access to $_dir"
         fi
 
@@ -531,7 +531,7 @@ prompt() {
         printf "%s [%s]: " "$_prompt" "$_default_value" >&2
     fi
 
-    if [ -t 0 ]; then
+    if [ ! -t 0 ]; then
         read -r _value < /dev/tty
     else
         read -r _value
@@ -562,10 +562,20 @@ github_url() {
     local _repo="$1"
     local _version="$2"
 
+    # Latest has a different path than branches & tags
     if [ "$_version" = "latest" ]; then
         echo "$_repo/releases/latest/download"
     else
-        echo "$_repo/releases/download/$_version"
+        case "$_version" in
+            # Starts with a digit, implies semver, so stick v in front
+            0*|1*|2*|3*|4*|5*|6*|7*|8*|9*)
+                echo "$_repo/releases/download/v$_version"
+                ;;
+            # Otherwise, use version as-is
+            *)
+                echo "$_repo/releases/download/$_version"
+                ;;
+        esac
     fi
 }
 
