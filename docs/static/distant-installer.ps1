@@ -416,6 +416,14 @@ $DISTANT_BIN_DIR = "$DISTANT_DIR\bin"
 $oldErrorActionPreference = $ErrorActionPreference
 $ErrorActionPreference = 'Stop'
 
+# Retrieve the value of the -Verbose parameter
+$verbosePreference = $PSBoundParameters['Verbose']
+
+# Set the $VerbosePreference variable to match the value of the -Verbose parameter
+if ($verbosePreference) {
+    $VerbosePreference = 'Continue'
+}
+
 # Logging debug info
 Write-DebugInfo $PSBoundParameters
 # Bootstrap function
