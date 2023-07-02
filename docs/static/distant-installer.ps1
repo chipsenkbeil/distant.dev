@@ -63,6 +63,8 @@
 #>
 param(
     [String] $DistantDir,
+    [String] $DistantHost,
+    [String] $DistantVersion,
     [Switch] $NoProxy,
     [Uri] $Proxy,
     [System.Management.Automation.PSCredential] $ProxyCredential,
