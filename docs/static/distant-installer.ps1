@@ -346,6 +346,8 @@ function Test-CommandAvailable {
 }
 
 function Write-DebugInfo {
+    param($BoundArgs)
+
     Write-Verbose "-------- PSBoundParameters --------"
     $BoundArgs.GetEnumerator() | ForEach-Object { Write-Verbose $_ }
     Write-Verbose "-------- Environment Variables --------"
