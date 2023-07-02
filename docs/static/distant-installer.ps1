@@ -404,7 +404,7 @@ $DISTANT_GITHUB_REPO = "https://github.com/chipsenkbeil/distant"
 
 # Input variables
 $DISTANT_DIR = $DistantDir, $env:DISTANT_DIR, "$env:LocalAppData\distant" | Where-Object { -not [String]::IsNullOrEmpty($_) } | Select-Object -First 1
-$DISTANT_HOST = $DistantHost, $env:DISTANT_HOST, Get-Host-Triple | Where-Object { -not [String]::IsNullOrEmpty($_) } | Select-Object -First 1
+$DISTANT_HOST = $DistantHost, $env:DISTANT_HOST, "$(Get-Host-Triple)" | Where-Object { -not [String]::IsNullOrEmpty($_) } | Select-Object -First 1
 $DISTANT_VERSION = $DistantVersion, $env:DISTANT_VERSION, "latest" | Where-Object { -not [String]::IsNullOrEmpty($_) } | Select-Object -First 1
 
 # Directory where binary will be stored
