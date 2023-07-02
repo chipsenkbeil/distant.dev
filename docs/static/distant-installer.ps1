@@ -346,14 +346,6 @@ function Test-CommandAvailable {
 }
 
 function Write-DebugInfo {
-    [CmdletBinding()]
-    param($BoundArgs)
-
-    # Set the $VerbosePreference variable to match the value of the -Verbose parameter
-    if ($PSBoundParameters['Verbose']) {
-        $VerbosePreference = 'Continue'
-    }
-
     Write-Verbose "-------- PSBoundParameters --------"
     $BoundArgs.GetEnumerator() | ForEach-Object { Write-Verbose $_ }
     Write-Verbose "-------- Environment Variables --------"
@@ -370,14 +362,6 @@ function Write-DebugInfo {
 }
 
 function Install-Distant {
-    [CmdletBinding()]
-    param()
-
-    # Set the $VerbosePreference variable to match the value of the -Verbose parameter
-    if ($PSBoundParameters['Verbose']) {
-        $VerbosePreference = 'Continue'
-    }
-
     Write-InstallInfo "Initializing..."
     # Validate install parameters
     Test-ValidateParameter
