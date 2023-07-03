@@ -37,15 +37,18 @@
     Distant installer.
 .DESCRIPTION
     The installer of Distant. For details please check the website.
-.PARAMETER DistantDir
-    Specifies Distant root path.
-    If not specified, Distant will be installed to '$env:LOCALAPPDATA\Distant'.
 .PARAMETER DistantHost
     Specifies Distant host (arch/platform) to install. This is normally a triple/quad.
     If not specified, will detect and use current system (e.g. x86_64-pc-windows-msvc).
 .PARAMETER DistantVersion
     Specifies Distant version to install.
     If not specified, Distant will use the latest full release (not pre-release).
+.PARAMETER InstallDir
+    Specifies path where distant will be installed.
+    If not specified, Distant will be installed to '$env:LocalAppData\distant\bin'.
+.PARAMETER OnConflict
+    Specifies how to handle the situation where distant is already installed.
+    If not specified, will ask whether to continue. Accepts "Ask", "Fail", "Overwrite".
 .PARAMETER NoProxy
     Bypass system proxy during the installation.
 .PARAMETER Proxy
@@ -62,9 +65,10 @@
     https://github.com/chipsenkbeil/distant
 #>
 param(
-    [String] $DistantDir,
     [String] $DistantHost,
     [String] $DistantVersion,
+    [String] $InstallDir,
+    [String] $OnConflict,
     [Switch] $NoProxy,
     [Uri] $Proxy,
     [System.Management.Automation.PSCredential] $ProxyCredential,
@@ -188,14 +192,42 @@ function Test-Prerequisite {
     }
 
     # Show notification to change execution policy
-    $allowedExecutionPolicy = @('Unrestricted', 'RemoteSigned', 'ByPass')
+    $allowedExecutionPolicy = @("Unrestricted", "RemoteSigned", "ByPass")
     if ((Get-ExecutionPolicy).ToString() -notin $allowedExecutionPolicy) {
         Deny-Install "PowerShell requires an execution policy in [$($allowedExecutionPolicy -join ", ")] to run distant. For example, to set the execution policy to 'RemoteSigned' please run 'Set-ExecutionPolicy RemoteSigned -Scope CurrentUser'."
     }
 
     # Test if distant is installed, by checking if distant command exists.
-    if (Test-CommandAvailable('distant')) {
-        Deny-Install "Distant is already installed."
+    if (Test-CommandAvailable("distant")) {
+        switch ($ON_CONFLICT.Trim().ToLower()) {
+            # If overwrite, will delete the version of distant and replace it
+            "overwrite" {
+                $Path = (Get-Command -Name distant).Path
+                Write-InstallInfo "Deleting existing binary at $Path"
+                Remove-Item -Force $Path
+            }
+
+            # If fail, will deny the installation immediately
+            "fail" {
+                Deny-Install "Distant is already installed."
+            }
+
+            # Anything else falls back to asking
+            default {
+                Do {
+                    $Answer = Read-Host -Prompt "Distant is already installed. Overwrite it? (y/n)"
+                }
+                Until ($Answer -eq 'y' -or $Answer -eq 'n')
+
+                if ($Answer -eq 'y') {
+                    $Path = (Get-Command -Name distant).Path
+                    Write-InstallInfo "Deleting existing binary at $Path"
+                    Remove-Item -Force $Path
+                } else {
+                    Deny-Install "Will exit installation as not overwriting distant."
+                }
+            }
+        }
     }
 }
 
@@ -317,23 +349,23 @@ function Add-BinDirToPath {
     # Get $env:PATH of current user
     $userEnvPath = Get-Env 'PATH'
 
-    if ($userEnvPath -notmatch [Regex]::Escape($DISTANT_BIN_DIR)) {
+    if ($userEnvPath -notmatch [Regex]::Escape($INSTALL_DIR)) {
         $h = (Get-PSProvider 'FileSystem').Home
         if (!$h.EndsWith('\')) {
             $h += '\'
         }
 
         if (!($h -eq '\')) {
-            $friendlyPath = "$DISTANT_BIN_DIR" -Replace ([Regex]::Escape($h)), "~\"
+            $friendlyPath = "$INSTALL_DIR" -Replace ([Regex]::Escape($h)), "~\"
             Write-InstallInfo "Adding $friendlyPath to your path."
         } else {
-            Write-InstallInfo "Adding $DISTANT_BIN_DIR to your path."
+            Write-InstallInfo "Adding $INSTALL_DIR to your path."
         }
 
         # For future sessions
-        Write-Env 'PATH' "$DISTANT_BIN_DIR;$userEnvPath"
+        Write-Env 'PATH' "$INSTALL_DIR;$userEnvPath"
         # For current session
-        $env:PATH = "$DISTANT_BIN_DIR;$env:PATH"
+        $env:PATH = "$INSTALL_DIR;$env:PATH"
     }
 }
 
@@ -352,15 +384,15 @@ function Write-DebugInfo {
     $BoundArgs.GetEnumerator() | ForEach-Object { Write-Verbose $_ }
     Write-Verbose "-------- Environment Variables --------"
     Write-Verbose "`$env:LocalAppData: $env:LocalAppData"
-    Write-Verbose "`$env:ProgramData: $env:ProgramData"
-    Write-Verbose "`$env:DISTANT_DIR: $env:DISTANT_DIR"
     Write-Verbose "`$env:DISTANT_HOST: $env:DISTANT_HOST"
     Write-Verbose "`$env:DISTANT_VERSION: $env:DISTANT_VERSION"
+    Write-Verbose "`$env:DISTANT_INSTALL_DIR: $env:DISTANT_INSTALL_DIR"
+    Write-Verbose "`$env:DISTANT_ON_CONFLICT: $env:DISTANT_ON_CONFLICT"
     Write-Verbose "-------- Selected Variables --------"
-    Write-Verbose "DISTANT_DIR: $DISTANT_DIR"
-    Write-Verbose "DISTANT_BIN_DIR: $DISTANT_BIN_DIR"
     Write-Verbose "DISTANT_HOST: $DISTANT_HOST"
     Write-Verbose "DISTANT_VERSION: $DISTANT_VERSION"
+    Write-Verbose "INSTALL_DIR: $INSTALL_DIR"
+    Write-Verbose "ON_CONFLICT: $ON_CONFLICT"
 }
 
 function Install-Distant {
@@ -376,12 +408,12 @@ function Install-Distant {
     $downloadUrl = "$(Get-Github-Url $DISTANT_GITHUB_REPO $DISTANT_VERSION)/distant-$DISTANT_HOST.exe"
 
     # Ensure our bin directory exists
-    if (-not (Test-Path -Path $DISTANT_BIN_DIR)) {
-        New-Item -ItemType Directory -Path $DISTANT_BIN_DIR | Out-Null
+    if (-not (Test-Path -Path $INSTALL_DIR)) {
+        New-Item -ItemType Directory -Path $INSTALL_DIR | Out-Null
     }
 
     # Specify the full path where the binary will be located
-    $downloadPath = Join-Path -Path $DISTANT_BIN_DIR -ChildPath "distant.exe"
+    $downloadPath = Join-Path -Path $INSTALL_DIR -ChildPath "distant.exe"
 
     # Initialize the downloader to get our binary
     $downloader = Get-Downloader
@@ -405,12 +437,10 @@ $IS_EXECUTED_FROM_IEX = ($null -eq $MyInvocation.MyCommand.Path)
 $DISTANT_GITHUB_REPO = "https://github.com/chipsenkbeil/distant"
 
 # Input variables
-$DISTANT_DIR = $DistantDir, $env:DISTANT_DIR, "$env:LocalAppData\distant" | Where-Object { -not [String]::IsNullOrEmpty($_) } | Select-Object -First 1
-$DISTANT_HOST = $DistantHost, $env:DISTANT_HOST, "$(Get-Host-Triple)" | Where-Object { -not [String]::IsNullOrEmpty($_) } | Select-Object -First 1
-$DISTANT_VERSION = $DistantVersion, $env:DISTANT_VERSION, "latest" | Where-Object { -not [String]::IsNullOrEmpty($_) } | Select-Object -First 1
-
-# Directory where binary will be stored
-$DISTANT_BIN_DIR = "$DISTANT_DIR\bin"
+$DISTANT_HOST       = $DistantHost, $env:DISTANT_HOST, "$(Get-Host-Triple)" | Where-Object { -not [String]::IsNullOrEmpty($_) } | Select-Object -First 1
+$DISTANT_VERSION    = $DistantVersion, $env:DISTANT_VERSION, "latest" | Where-Object { -not [String]::IsNullOrEmpty($_) } | Select-Object -First 1
+$INSTALL_DIR        = $InstallDir, $env:DISTANT_INSTALL_DIR, "$env:LocalAppData\distant\bin" | Where-Object { -not [String]::IsNullOrEmpty($_) } | Select-Object -First 1
+$ON_CONFLICT        = $OnConflict, $env:DISTANT_ON_CONFLICT, "Ask" | Where-Object { -not [String]::IsNullOrEmpty($_) } | Select-Object -First 1
 
 # Quit if anything goes wrong
 $oldErrorActionPreference = $ErrorActionPreference

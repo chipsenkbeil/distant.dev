@@ -17,10 +17,15 @@ set -u
 
 DISTANT_REPO="${DISTANT_REPO:-https://github.com/chipsenkbeil/distant}"
 
-# Flag which, if set, will suppress printing output
+# Global flags to be configured
 QUIET=
+VERBOSE=
+RUN_AS_ADMIN=
 
 usage() {
+    get_architecture || return 1
+    local _arch="$RETVAL"
+
     cat <<EOF
 distant-installer.sh 1.0.0
 The installer for distant
@@ -30,35 +35,42 @@ USAGE:
 
 OPTIONS:
     -q, --quiet
-            Disable output
+            Disable output entirely.
+            If on-conflict is "ask", this will force it to "fail".
 
-    -y
-            Disable confirmation prompt.
+    -v, --verbose
+            Print out additional information.
 
-        --with-dir <dir>
-            Choose a directory where distant will be installed
+        --install-dir <dir>
+            Specifies path where distant will be installed.
+            If not specified, will be installed into $HOME/.local/bin.
 
-        --with-host <host>
-            Choose a specific build of distant (arch/platform)
+        --on-conflict <action>
+            Specifies the action to take if distant is already installed.
+            If not specified, will ask whether or not to overwrite.
+            Choices are "ask", "fail", and "overwrite".
 
-        --with-version <version>
-            Choose a version to install
+        --distant-host <host>
+            Choose a specific build of distant (arch/platform).
+            If not provided, will use "$_arch".
+
+        --distant-version <version>
+            Choose a version of distant to install.
+            If not provided, will use the latest stable release.
+
+        --run-as-admin
+            Force to run the installer as administrator.
+            Normally, if the script is run as root, it will fail; however,
+            enabling this option will allow the script to continue.
 
     -h, --help
-            Print help information
+            Print help information.
 EOF
 }
 
 main() {
     local _script_name
     _script_name="$0"
-
-    local _is_root
-    if [ "$(id -u)" -eq 0 ]; then
-        _is_root=0
-    else
-        _is_root=1
-    fi
 
     #
     # VERIFY SYSTEM HAS NEEDED TOOLS
@@ -88,26 +100,24 @@ main() {
     esac
 
     # Set default version to latest release
+    # Support DISTANT_VERSION environment variable
     local _version
-    _version="latest"
+    _version="${DISTANT_VERSION:-latest}"
 
     # Directory where distant will be installed
+    # Support DISTANT_INSTALL_DIR environment variable
     local _dir
-    if [ "$_is_root" -eq 0 ]; then
-        # Root will store in /usr/local/bin
-        _dir="/usr/local/bin"
-    else
-        # Normal user stores in a directory local to them (following XDG)
-        _dir="$HOME/.local/bin"
-    fi
-    _dir="${DISTANT_DOWNLOAD_DIR:-$_dir}"
+    _dir="${DISTANT_INSTALL_DIR:-$HOME/.local/bin}"
 
-    # Path to where distant will be installed locally
-    local _file
-    _file="${_dir}/distant${_ext}"
+    # Set default handling of a conflict
+    # Support DISTANT_ON_CONFLICT environment variable
+    local _on_conflict
+    _on_conflict="${DISTANT_ON_CONFLICT:-ask}"
 
-    # check if we have to use /dev/tty to prompt the user
-    local need_tty=yes
+    #
+    # READ CLI ARGUMENTS
+    #
+
     while [ "$#" -gt 0 ]; do
         case "$1" in
             -h|--help)
@@ -118,24 +128,33 @@ main() {
                 QUIET=yes
                 shift # past argument
                 ;;
-            -y)
-                need_tty=no
+            -v|--verbose)
+                VERBOSE=yes
                 shift # past argument
                 ;;
-            --with-dir)
+            --install-dir)
                 _dir="$2"
                 shift # past argument
                 shift # past value
                 ;;
-            --with-host)
+            --on-conflict)
+                _on_conflict="$2"
+                shift # past argument
+                shift # past value
+                ;;
+            --distant-host)
                 _arch="$2"
                 shift # past argument
                 shift # past value
                 ;;
-            --with-version)
+            --distant-version)
                 _version="$2"
                 shift # past argument
                 shift # past value
+                ;;
+            --run-as-admin)
+                RUN_AS_ADMIN=yes
+                shift # past argument
                 ;;
             *)
                 err "Unknown argument $1"
@@ -143,94 +162,84 @@ main() {
         esac
     done
 
+    # We will avoid prompting when quiet
+    if [ ! "$_on_conflict" = "overwrite" ] && [ "$QUIET" = "yes" ]; then
+        _on_conflict="fail"
+    fi
+
     #
-    # PERFORM INTERACTIVE OPERATIONS
+    # PRINT VERBOSE INFORMATION
     #
 
-    if [ "$need_tty" = "yes" ]; then
-        # The installer is going to want to ask for confirmation by
-        # reading stdin.  This script was piped into `sh` though and
-        # doesn't have stdin to pass to its children. Instead we're going
-        # to explicitly connect /dev/tty to the installer's stdin.
-        if [ ! -t 0 ] && [ ! -t 1 ]; then
-            err "Unable to run interactively. Run with -y to accept defaults, --help for additional options"
-        fi
+    say_verbose "-------- Environment Variables --------"
+    say_verbose "DISTANT_HOST: ${DISTANT_HOST:-}"
+    say_verbose "DISTANT_VERSION: ${DISTANT_VERSION:-}"
+    say_verbose "DISTANT_INSTALL_DIR: ${DISTANT_INSTALL_DIR:-}"
+    say_verbose "DISTANT_ON_CONFLICT: ${DISTANT_ON_CONFLICT:-}"
+    say_verbose "-------- Selected Variables --------"
+    say_verbose "QUIET: $QUIET"
+    say_verbose "VERBOSE: $VERBOSE"
+    say_verbose "DISTANT_HOST: $_arch"
+    say_verbose "DISTANT_VERSION: $_version"
+    say_verbose "INSTALL_DIR: $_dir"
+    say_verbose "ON_CONFLICT: $_on_conflict"
+    say_verbose ""
 
-        say "Preparing to install distant!"
-        say "Please ensure the following information is correct, or update it."
-        _version=$(prompt "Version" "$_version")
-        _arch=$(prompt "Host" "$_arch")
-        _dir=$(prompt "Installation directory" "$_dir")
+    #
+    # PERFORM CHECKS
+    #
+
+    say "Initializing..."
+
+    # If we are running as root and not explicitly told to support this,
+    # then we want to fail with an error message
+    if [ "$(id -u)" -eq 0 ] && [ ! "$RUN_AS_ADMIN" = "yes" ]; then
+        err "Running the installer as root is disabled by default. If you really want to do this, rerun with --run-as-admin."
+    fi
+
+    # Check if the install directory exists, and create it if it does not
+    if [ ! -d "$_dir" ]; then
+        ensure mkdir -p "$_dir"
+    fi
+
+    # Check that we have permission to write files within the directory
+    if [ ! -w "$_dir" ]; then
+        err "Directory $_dir is not writable where distant would be installed!"
+    fi
+
+    # Set the full path to where distant will be installed
+    local _file
+    _file="${_dir}/distant${_ext}"
+
+    # Check if the distant binary already exists, and handle accordingly
+    if [ -e "$_file" ]; then
+        case "$_on_conflict" in
+            overwrite)
+                say "Removing existing binary at $_file" 1>&2
+                rm "$_file"
+                ;;
+            fail)
+                err "distant is already installed"
+                ;;
+            *)
+                local _answer
+                while [ ! "$_answer" = "y" ] && [ ! "$_answer" = "n" ]; do
+                    _answer=$(prompt "Distant is already installed. Overwrite it? (y/n)" "")
+                done
+
+                if [ "$_answer" = "y" ]; then
+                    say "Removing existing binary at $_file" 1>&2
+                    rm "$_file"
+                else
+                    err "distant is already installed"
+                fi
+                ;;
+        esac
     fi
 
     # Set the url we will use to download
     local _url
     _url="$(github_url "$DISTANT_REPO" "$_version")/distant-${_arch}${_ext}"
-
-    # Check if the directory given exists, and create it if it does not
-    if [ ! -d "$_dir" ]; then
-        local _create_dir
-        _create_dir="yes"
-
-        if [ "$need_tty" = "yes" ]; then
-            _create_dir=$(prompt "Directory missing! Create it? (yes/no)" "yes")
-        fi
-
-        if [ "$_create_dir" = "yes" ]; then
-            ensure mkdir -p "$_dir"
-        else
-            err "Exiting as $_dir missing and not created"
-        fi
-    fi
-
-    # Check that we have permission to write files within the directory
-    if [ ! -w "$_dir" ]; then
-        local _should_elevate
-        _should_elevate="no"
-
-        # If we are already root, nothing we can do
-        if [ "$_is_root" -eq 0 ]; then
-            err "Root does not have access to $_dir"
-        fi
-
-        if [ "$need_tty" = "yes" ]; then
-            if [ ! -t 0 ]; then
-                err "Directory is not writable where distant would be installed!"
-            fi
-
-            _should_elevate=$(prompt "Directory not writable! Elevate permissions? (yes/no)" "no")
-        fi
-
-        if [ "$_should_elevate" = "yes" ]; then
-            if command -v sudo >/dev/null 2>&1; then
-                say "Elevating using sudo: $_script_name"
-                sudo \
-                    "$_script_name" \
-                    -y \
-                    --with-dir "$_dir" \
-                    --with-host "$_arch" \
-                    --with-version "$_version"
-
-                local _retval=$?
-                exit "$_retval"
-            elif command -v doas >/dev/null 2>&1; then
-                say "Elevating using doas: $script_name"
-                doas \
-                    "$_script_name" \
-                    -y \
-                    --with-dir "$_dir" \
-                    --with-host "$_arch" \
-                    --with-version "$_version"
-
-                local _retval=$?
-                exit "$_retval"
-            else
-                err 'Could not locate "sudo" or "doas" to use for elevated permissions'
-            fi
-        else
-            err "Exiting as $_dir is not writable and not elevating permissions"
-        fi
-    fi
 
     #
     # PERFORM DOWNLOAD, PERMISSION SETTING, AND VERSION TEST
@@ -247,21 +256,23 @@ main() {
         fi
     fi
 
-    if [ $_ansi_escapes_are_valid ] && [ ! "$QUIET" = "yes" ] ; then
-        # NOTE: Need to do it this way for ansi escapes to work
-        printf "\33[1minfo:\33[0m downloading distant from %s\n" "$_url" 1>&2
-    else
-        say "info: downloading distant from $_url" 1>&2
-    fi
-
+    # Download and install the binary
+    say "Downloading $_url to $_file" 1>&2
     ensure downloader "$_url" "$_file" "$_arch"
     ensure chmod u+x "$_file"
     if [ ! -x "$_file" ]; then
         err "Cannot execute $_file (unexpectedly failed to set permissions)."
     fi
 
-    # Test that the binary actually works on the system where it is installed
-    ignore "$_file" --version
+    if [ $_ansi_escapes_are_valid ] && [ ! "$QUIET" = "yes" ] ; then
+        # NOTE: Need to do it this way for ansi escapes to work
+        # \33[ is escape; 0m is default fg color; 32m is dark green fg color
+        printf "\33[32mDistant was installed successfully!\33[0m\n" 1>&2
+    else
+        say "Distant was installed successfully!" 1>&2
+    fi
+    say "Make sure to add \"$_dir\" to your PATH!" 1>&2
+    say "Type '$_file help' for instructions." 1>&2
 
     exit 0
 }
@@ -547,6 +558,12 @@ prompt() {
 say() {
     if [ ! "$QUIET" = "yes" ]; then
         printf '%s\n' "$1"
+    fi
+}
+
+say_verbose() {
+    if [ "$VERBOSE" = "yes" ]; then
+        say "$1"
     fi
 }
 
