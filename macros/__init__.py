@@ -29,14 +29,23 @@ def define_env(env):
         div_style = "z-index: 1; position: relative;"
         html += '<div id="' + div_id + '" style="' + div_style + '"></div>'
 
-        # Create script tag that will perform cast
-        html += "<script>"
-        html += "document.addEventListener('DOMContentLoaded', function() {"
-        html += "AsciinemaPlayer.create('" + file + "', document.getElementById('" + div_id + "'), {"
+        # Define JS representing creating the player
+        create_player_js = ""
+        create_player_js += "AsciinemaPlayer.create('" + file + "', document.getElementById('" + div_id + "'), {"
         for key, value in opts.items():
-            html += '"' + key + '": ' + value_str(value) + ','
+            create_player_js += '"' + key + '": ' + value_str(value) + ','
+        create_player_js += "});"
+
+        # Create script tag that will perform cast by either registering for the DOM to
+        # load or firing immediately if already loaded
+        html += "<script>"
+        html += "if (document.readyState === 'loading') {"
+        html += "document.addEventListener('DOMContentLoaded', function() {"
+        html += create_player_js
         html += "});"
-        html += "});"
+        html += "} else {"
+        html += create_player_js
+        html += "}"
         html += "</script>"
     
         return html
