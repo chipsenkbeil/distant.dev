@@ -214,10 +214,7 @@ function Test-Prerequisite {
 
             # Anything else falls back to asking
             default {
-                $Cursor = [System.Console]::CursorTop
                 Do {
-                    [System.Console]::CursorTop = $Cursor
-                    Clear-Host
                     $Answer = Read-Host -Prompt "Distant is already installed. Overwrite it? (y/n)"
                 }
                 Until ($Answer -eq 'y' -or $Answer -eq 'n')
