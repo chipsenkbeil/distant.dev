@@ -9,7 +9,11 @@ copyright: Chip Senkbeil © 2023
 nav:
   - Home: 'index.md'
   - Getting Started:
-    - 'getting-started/installation.md'
+    - Installation:
+      - 'getting-started/installation/unix.md'
+      - 'getting-started/installation/windows.md'
+      - 'getting-started/installation/manually-download.md'
+      - 'getting-started/installation/from-source.md'
     - 'getting-started/usage.md'
   - Reference:
     - 'reference/spawning-manager.md'
