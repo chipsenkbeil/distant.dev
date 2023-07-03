@@ -124,6 +124,12 @@ installation.
 .\install.ps1 -InstallDir 'D:\Applications\Distant\bin' -DistantVersion '0.20.0-alpha.10' -NoProxy
 ```
 
+Or you can provide arguments inline such as this example.
+
+```powershell
+iex "& {$(irm sh.distant.dev)} -InstallDir 'D:\Applications\Distant\bin' -DistantVersion '0.20.0-alpha.10' -NoProxy"
+```
+
 Or you can use the legacy method to configure custom directory by setting Environment Variables. (**Not Recommended**)
 
 ```powershell
