@@ -10,7 +10,9 @@ nav:
   - Home: 'index.md'
   - Getting Started:
     - 'getting-started/installation.md'
+    - 'getting-started/usage.md'
   - Reference:
+    - 'reference/spawning-manager.md'
     - 'reference/examples.md'
   - About:
     - 'about/overview.md'
@@ -45,11 +47,21 @@ theme:
         name: Switch to light mode
 
 markdown_extensions:
+  - abbr
+  - admonition
   - pymdownx.highlight
   - pymdownx.superfences
 
 plugins:
   - search
+  - macros:
+      module_name: macros
+      on_error_fail: true
+      on_undefined: strict
 
 extra_css:
   - stylesheets/extra.css
+  - stylesheets/asciinema-player.css
+
+extra_javascript:
+  - javascripts/asciinema-player.min.js
