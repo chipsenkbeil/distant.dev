@@ -16,8 +16,8 @@ nav:
       - 'getting-started/installation/from-source.md'
     - 'getting-started/usage.md'
   - Reference:
-    - 'reference/spawning-manager.md'
-    - 'reference/examples.md'
+    - Guides:
+      - 'reference/guides/spawning-the-manager.md'
   - About:
     - 'about/overview.md'
     - 'about/features.md'
