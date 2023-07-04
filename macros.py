@@ -1,3 +1,4 @@
+import subprocess
 import uuid
 
 def value_str(value):
@@ -50,3 +51,30 @@ def define_env(env):
         html += "</script>"
     
         return html
+
+    @env.macro
+    def run(cmd, into_admonition=False):
+        # Start by capturing everything
+        stdout = subprocess.PIPE
+        stderr = subprocess.STDOUT
+
+        result = subprocess.run(
+            cmd,
+            check=False,
+            text=True,
+            shell=True,
+            stdout=stdout,
+            stderr=stderr,
+        )
+        output = result.stdout.strip()
+
+        if into_admonition:
+            admonition = '??? info "' + cmd + '"\n'
+            admonition += "\n"
+            admonition += "    ```\n"
+            for line in output.splitlines():
+                admonition += "    " + line + "\n"
+            admonition += "    ```"
+            return admonition
+
+        return output

@@ -16,6 +16,14 @@ be installed separately as it is not bundled in with mkdocs-material.
 pip3 install mkdocs-macros-plugin
 ```
 
+Finally, we use `distant` to generate help docs that we display on the website.
+The latest version needs to be installed as described at
+https://distant.dev/getting-started/installation/unix/:
+
+```sh
+curl -L https://sh.distant.dev | sh
+```
+
 ## Insiders Edition
 
 Note that this site currently uses the Insiders edition, which is a paid

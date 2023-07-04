@@ -31,5 +31,8 @@ jobs:
       - name: Install Mkdocs plugins
         run: |
           pip install mkdocs-macros-plugin 
+      - name: Install distant (needed for help doc generation)
+        run: |
+          curl -L https://sh.distant.dev | sh -s -- --distant-version 0.20.0-alpha.10 --distant-host linux64-gnu-x86
       - name: Redeploy website
         run: mkdocs gh-deploy --force
