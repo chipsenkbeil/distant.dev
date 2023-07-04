@@ -37,8 +37,11 @@ theme:
     - navigation.instant
     - navigation.tabs
     - navigation.tracking
-  palette:
   palette: 
+    - media: "(prefers-color-scheme)"
+      toggle:
+        icon: material/brightness-auto
+        name: Switch to system preference
     - media: "(prefers-color-scheme: light)"
       scheme: default
       primary: custom
