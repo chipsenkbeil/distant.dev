@@ -16,6 +16,13 @@ be installed separately as it is not bundled in with mkdocs-material.
 pip3 install mkdocs-macros-plugin
 ```
 
+## Insiders Edition
+
+Note that this site currently uses the Insiders edition, which is a paid
+subscription. While it can be built with the normal edition of Mkdocs Material,
+some features will be missing or not rendered. The pipeline to re-deploy the
+website has access and will use the Insiders edition.
+
 # Building & serving the website
 
 * `mkdocs build` will generate the website locally
