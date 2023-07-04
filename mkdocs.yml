@@ -16,6 +16,10 @@ nav:
       - 'getting-started/installation/from-source.md'
     - 'getting-started/usage.md'
   - Reference:
+    - Configuration:
+      - CLI:
+        - 'reference/configuration/cli/config.md'
+        - 'reference/configuration/cli/default.md'
     - Guides:
       - 'reference/guides/spawning-the-manager.md'
   - About:
@@ -53,8 +57,14 @@ theme:
 markdown_extensions:
   - abbr
   - admonition
+  - attr_list
+  - md_in_html
+  - pymdownx.details
   - pymdownx.highlight
+  - pymdownx.inlinehilite
   - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true 
 
 plugins:
   - search
