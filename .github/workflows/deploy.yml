@@ -23,6 +23,8 @@ jobs:
           restore-keys: |
             mkdocs-material-
       - name: Install Mkdocs & Mkdocs Material
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
           pip install git+https://${GH_TOKEN}@github.com/squidfunk/mkdocs-material-insiders.git
       - name: Install Mkdocs plugins
