@@ -10,11 +10,11 @@ the available features and which backend supports each feature:
 
 | Feature                  | distant      | ssh             |
 | ------------------------ | ------------ | --------------- |
-| Filesystem I/O      [^1] | {{ f_full }} | {{ f_full }}    |
-| Filesystem Watching [^2] | {{ f_full }} | {{ f_none }}    |
-| Process Execution   [^3] | {{ f_full }} | {{ f_full }}    |
-| Reconnect           [^4] | {{ f_full }} | {{ f_none }}    |
-| Search              [^5] | {{ f_full }} | {{ f_none }}    |
+| Filesystem I/O      [^1] | {{ f_full }} | {{ f_full    }} |
+| Filesystem Watching [^2] | {{ f_full }} | {{ f_none    }} |
+| Process Execution   [^3] | {{ f_full }} | {{ f_full    }} |
+| Reconnect           [^4] | {{ f_full }} | {{ f_none    }} |
+| Search              [^5] | {{ f_full }} | {{ f_none    }} |
 | System Information  [^6] | {{ f_full }} | {{ f_partial }} |
 
 [^1]: able to read from and write to the filesystem.
