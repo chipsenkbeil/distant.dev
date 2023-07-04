@@ -17,7 +17,12 @@ nav:
     - 'getting-started/usage.md'
   - Reference:
     - CLI:
-      - 'reference/cli/config.md'
+      - Config:
+        - 'reference/cli/config/overview.md'
+        - 'reference/cli/config/client.md'
+        - 'reference/cli/config/generate.md'
+        - 'reference/cli/config/manager.md'
+        - 'reference/cli/config/server.md'
       - Guides:
         - 'reference/cli/guides/spawning-the-manager.md'
   - About:
