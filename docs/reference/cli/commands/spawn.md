@@ -7,6 +7,7 @@ use this command:
     ```sh
     distant spawn -- echo hello
     ```
+
 2. Providing a `-c <STR>` argument where a string argument is used to signify
    the command and its arguments. This can be useful when passing around a
    command from scripts.
