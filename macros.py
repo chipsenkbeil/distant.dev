@@ -7,9 +7,10 @@ def value_str(value):
     return s
 
 def define_env(env):
-    """
-    This is the hook for defining variables, macros and filters
-    """
+    # Define feature icons
+    env.variables["f_full"]    = ':white_check_mark:{ title="Full support" }'
+    env.variables["f_partial"] = ':warning:{ title="Partial support" }'
+    env.variables["f_none"]    = ':x:{ title="No support" }'
 
     @env.macro
     def asciinema(file, **kwargs):

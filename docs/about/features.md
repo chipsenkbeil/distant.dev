@@ -8,25 +8,18 @@ another server. Today, these backends include:
 Not every backend supports every feature of distant. Below is a table outlining
 the available features and which backend supports each feature:
 
-| Feature               | distant | ssh |
-| --------------------- | --------| ----|
-| Filesystem I/O        | ✅      | ✅  |
-| Filesystem Watching   | ✅      | ❌  |
-| Process Execution     | ✅      | ✅  |
-| Reconnect             | ✅      | ❌  |
-| Search                | ✅      | ❌  |
-| System Information    | ✅      | ⚠   |
+| Feature                  | distant      | ssh             |
+| ------------------------ | ------------ | --------------- |
+| Filesystem I/O      [^1] | {{ f_full }} | {{ f_full }}    |
+| Filesystem Watching [^2] | {{ f_full }} | {{ f_none }}    |
+| Process Execution   [^3] | {{ f_full }} | {{ f_full }}    |
+| Reconnect           [^4] | {{ f_full }} | {{ f_none }}    |
+| Search              [^5] | {{ f_full }} | {{ f_none }}    |
+| System Information  [^6] | {{ f_full }} | {{ f_partial }} |
 
-* ✅ means full support
-* ⚠ means partial support
-* ❌ means no support
-
-### Feature Details
-
-* **Filesystem I/O:** able to read from and write to the filesystem
-* **Filesystem Watching:** able to receive notifications when changes to the
-  filesystem occur
-* **Process Execution:** able to execute processes
-* **Reconnect:** able to reconnect after network outages
-* **Search:** able to search the filesystem
-* **System Information:** able to retrieve information about the system
+[^1]: able to read from and write to the filesystem.
+[^2]: able to receive notifications when changes to the filesystem occur.
+[^3]: able to execute processes.
+[^4]: able to reconnect after network outages.
+[^5]: able to search the filesystem.
+[^6]: able to retrieve information about the system.
