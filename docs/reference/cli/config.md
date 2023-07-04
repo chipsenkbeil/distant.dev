@@ -41,7 +41,7 @@ For example `#!toml [server]` is associated with `distant server`. The only
 exception is `#!toml [client]`, which is associated with all client-facing
 commands such as `distant fs`, `distant launch`, and `distant shell`.
 
-### Client
+## Client
 
 All client settings fall under `#!toml [client]`.
 
@@ -53,7 +53,7 @@ log_level = "trace"
 bin = "/path/to/distant"
 ```
 
-#### log_file
+### log_file
 
 <div class="grid" markdown>
 
@@ -73,7 +73,7 @@ log_file = "/path/to/file.log"
 
 </div>
 
-#### log_level
+### log_level
 
 <div class="grid" markdown>
 
@@ -94,7 +94,7 @@ log_level = "info"
 
 </div>
 
-#### api.timeout
+### api.timeout
 
 <div class="grid" markdown>
 
@@ -115,7 +115,7 @@ timeout = 60
 
 </div>
 
-#### api.unix_socket
+### api.unix_socket
 
 <div class="grid" markdown>
 
@@ -136,7 +136,7 @@ unix_socket = "/path/to/distant.sock"
 
 </div>
 
-#### api.windows_pipe
+### api.windows_pipe
 
 <div class="grid" markdown>
 
@@ -157,7 +157,7 @@ windows_pipe = "some_name"
 
 </div>
 
-#### connect.options
+### connect.options
 
 <div class="grid" markdown>
 
@@ -179,7 +179,7 @@ options = "ssh.backend=\"libssh\",value=\"123\""
 
 </div>
 
-#### launch.bin
+### launch.bin
 
 <div class="grid" markdown>
 
@@ -201,7 +201,7 @@ bin = "/path/to/distant"
 
 </div>
 
-#### launch.bind_server
+### launch.bind_server
 
 <div class="grid" markdown>
 
@@ -232,7 +232,7 @@ bind_server = "192.168.1.5"
 
 </div>
 
-#### launch.args
+### launch.args
 
 <div class="grid" markdown>
 
@@ -252,7 +252,7 @@ args = "--shutdown lonely=60 --use-ipv6"
 
 </div>
 
-#### launch.options
+### launch.options
 
 <div class="grid" markdown>
 
@@ -274,7 +274,7 @@ options = "ssh.backend=\"libssh\",value=\"123\""
 
 </div>
 
-### Generate
+## Generate
 
 All generate settings fall under `#!toml [generate]`.
 
@@ -283,7 +283,7 @@ All generate settings fall under `#!toml [generate]`.
 log_level = "trace"
 ```
 
-#### log_file
+### log_file
 
 <div class="grid" markdown>
 
@@ -303,7 +303,7 @@ log_file = "/path/to/file.log"
 
 </div>
 
-#### log_level
+### log_level
 
 <div class="grid" markdown>
 
@@ -324,7 +324,7 @@ log_level = "info"
 
 </div>
 
-### Manager
+## Manager
 
 All manager settings fall under `#!toml [manager]`.
 
@@ -334,7 +334,7 @@ log_level = "trace"
 access = "group"
 ```
 
-#### log_file
+### log_file
 
 <div class="grid" markdown>
 
@@ -354,7 +354,7 @@ log_file = "/path/to/file.log"
 
 </div>
 
-#### log_level
+### log_level
 
 <div class="grid" markdown>
 
@@ -375,7 +375,7 @@ log_level = "info"
 
 </div>
 
-#### access
+### access
 
 <div class="grid" markdown>
 
@@ -399,7 +399,7 @@ access = "group"
 
 </div>
 
-#### unix_socket
+### unix_socket
 
 <div class="grid" markdown>
 
@@ -418,7 +418,7 @@ unix_socket = "/path/to/distant.sock"
 
 </div>
 
-#### windows_pipe
+### windows_pipe
 
 <div class="grid" markdown>
 
@@ -438,7 +438,7 @@ windows_pipe = "some_name"
 
 </div>
 
-### Server
+## Server
 
 All server settings fall under `#!toml [manager]`.
 
@@ -450,7 +450,7 @@ log_level = "trace"
 port = "8080"
 ```
 
-#### log_file
+### log_file
 
 <div class="grid" markdown>
 
@@ -470,7 +470,7 @@ log_file = "/path/to/file.log"
 
 </div>
 
-#### log_level
+### log_level
 
 <div class="grid" markdown>
 
@@ -491,7 +491,7 @@ log_level = "info"
 
 </div>
 
-#### listen.host
+### listen.host
 
 <div class="grid" markdown>
 
@@ -523,7 +523,7 @@ host = "192.168.1.5"
 
 </div>
 
-#### listen.port
+### listen.port
 
 <div class="grid" markdown>
 
@@ -551,7 +551,7 @@ port = "8080:8089"
 
 </div>
 
-#### listen.use_ipv6
+### listen.use_ipv6
 
 <div class="grid" markdown>
 
@@ -571,7 +571,7 @@ use_ipv6 = true
 
 </div>
 
-#### listen.shutdown
+### listen.shutdown
 
 <div class="grid" markdown>
 
@@ -595,7 +595,7 @@ shutdown = "lonely=60"
 
 </div>
 
-#### listen.current_dir
+### listen.current_dir
 
 <div class="grid" markdown>
 
@@ -616,7 +616,7 @@ current_dir = "/path/to/dir"
 
 </div>
 
-#### watch.native
+### watch.native
 
 <div class="grid" markdown>
 
@@ -638,7 +638,7 @@ native = false
 
 </div>
 
-#### watch.poll_interval
+### watch.poll_interval
 
 <div class="grid" markdown>
 
@@ -659,7 +659,7 @@ poll_interval = 30
 
 </div>
 
-#### watch.compare_contents
+### watch.compare_contents
 
 <div class="grid" markdown>
 
@@ -681,7 +681,7 @@ compare_contents = true
 
 </div>
 
-#### watch.debounce_timeout
+### watch.debounce_timeout
 
 <div class="grid" markdown>
 
@@ -704,7 +704,7 @@ debounce_timeout = 0.5
 
 </div>
 
-#### watch.debounce_tick_rate
+### watch.debounce_tick_rate
 
 <div class="grid" markdown>
 

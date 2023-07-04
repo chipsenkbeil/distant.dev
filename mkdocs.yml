@@ -16,12 +16,10 @@ nav:
       - 'getting-started/installation/from-source.md'
     - 'getting-started/usage.md'
   - Reference:
-    - Configuration:
-      - CLI:
-        - 'reference/configuration/cli/config.md'
-        - 'reference/configuration/cli/default.md'
-    - Guides:
-      - 'reference/guides/spawning-the-manager.md'
+    - CLI:
+      - 'reference/cli/config.md'
+      - Guides:
+        - 'reference/cli/guides/spawning-the-manager.md'
   - About:
     - 'about/overview.md'
     - 'about/features.md'
