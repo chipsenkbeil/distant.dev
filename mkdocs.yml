@@ -41,7 +41,6 @@ nav:
           - 'reference/cli/commands/fs/watch.md'
           - 'reference/cli/commands/fs/write.md'
         - Generate:
-          - Generate: 'reference/cli/commands/generate/index.md'
           - 'reference/cli/commands/generate/completion.md'
           - 'reference/cli/commands/generate/config.md'
         - 'reference/cli/commands/launch.md'

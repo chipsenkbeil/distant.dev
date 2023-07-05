@@ -16,4 +16,4 @@ use this command:
     distant spawn -c "echo hello"
     ```
 
-{{ run("distant spawn --help", into_admonition=True) }}
+{{ run("distant spawn --help", admonition="info") }}

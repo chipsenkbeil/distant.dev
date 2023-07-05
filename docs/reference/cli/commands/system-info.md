@@ -10,4 +10,4 @@ Retrieves information about the remote system where the server is running.
 | Username  | Name of the user running the server                   | "myuser"          |
 | Shell     | Full path to the default shell used by the server     | "/bin/zsh"        |
 
-{{ run("distant system-info --help", into_admonition=True) }}
+{{ run("distant system-info --help", admonition="info") }}

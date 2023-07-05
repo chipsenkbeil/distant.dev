@@ -53,7 +53,7 @@ def define_env(env):
         return html
 
     @env.macro
-    def run(cmd, into_admonition=False):
+    def run(cmd, admonition=None, title=None, lang=None, collapsible=True, expanded=False):
         # Start by capturing everything
         stdout = subprocess.PIPE
         stderr = subprocess.STDOUT
@@ -68,13 +68,39 @@ def define_env(env):
         )
         output = result.stdout.strip()
 
-        if into_admonition:
-            admonition = '??? info "' + cmd + '"\n'
+        if admonition is not None:
+            # ADMONITION START LINE #
+            if collapsible:
+                admonition = "???" + ("+" if expanded else "") + " " + admonition
+                if expanded:
+                    admonition += "+"
+            else:
+                admonition = "!!! " + admonition
+            admonition += ' "'
+            if isinstance(title, str):
+                admonition += title
+            else:
+                admonition += cmd
+
+            admonition += '"\n'
+
+            # BLANK LINE #
             admonition += "\n"
-            admonition += "    ```\n"
+
+            # << START CODE BLOCK >> #
+            admonition += "    ```"
+
+            if isinstance(lang, str):
+                admonition += lang
+
+            admonition += "\n"
+
             for line in output.splitlines():
                 admonition += "    " + line + "\n"
+
             admonition += "    ```"
+            # << END CODE BLOCK >> #
+
             return admonition
 
         return output
