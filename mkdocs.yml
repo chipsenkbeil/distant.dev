@@ -73,10 +73,10 @@ theme:
   logo: assets/logo.svg
   custom_dir: overrides
   features:
-    - navigation.breadcrumb
     - navigation.indexes
     - navigation.instant
     - navigation.instant.prefetch
+    - navigation.path
     - navigation.tabs
     - navigation.tracking
   palette: 
