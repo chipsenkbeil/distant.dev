@@ -23,12 +23,19 @@ jobs:
           restore-keys: |
             mkdocs-material-
       - name: Install Mkdocs & Mkdocs Material
-        run: pip install mkdocs-material 
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          COMMIT: fa5bd3f45024328d973977db80cccd5b1df89228
+        run: |
+          pip install git+https://${GH_TOKEN}@github.com/squidfunk/mkdocs-material-insiders.git@${COMMIT}
       - name: Install Mkdocs plugins
         run: |
           pip install mkdocs-macros-plugin 
       - name: Install system dependencies
         run: |
           apt-get install -y pngquant
+      - name: Install distant (needed for help doc generation)
+        run: |
+          curl -L https://sh.distant.dev | sh -s -- --on-conflict fail
       - name: Redeploy website
         run: mkdocs gh-deploy --force

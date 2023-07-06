@@ -16,8 +16,52 @@ nav:
       - 'getting-started/installation/from-source.md'
     - 'getting-started/usage.md'
   - Reference:
-    - Guides:
-      - 'reference/guides/spawning-the-manager.md'
+    - CLI:
+      - Config:
+        - Config: 'reference/cli/config/index.md'
+        - 'reference/cli/config/client.md'
+        - 'reference/cli/config/generate.md'
+        - 'reference/cli/config/manager.md'
+        - 'reference/cli/config/server.md'
+      - Commands:
+        - Commands: 'reference/cli/commands/index.md'
+        - 'reference/cli/commands/api.md'
+        - 'reference/cli/commands/connect.md'
+        - Filesystem:
+          - Filesystem: 'reference/cli/commands/fs/index.md'
+          - 'reference/cli/commands/fs/copy.md'
+          - 'reference/cli/commands/fs/exists.md'
+          - 'reference/cli/commands/fs/make-dir.md'
+          - 'reference/cli/commands/fs/metadata.md'
+          - 'reference/cli/commands/fs/read.md'
+          - 'reference/cli/commands/fs/remove.md'
+          - 'reference/cli/commands/fs/rename.md'
+          - 'reference/cli/commands/fs/search.md'
+          - 'reference/cli/commands/fs/set-permissions.md'
+          - 'reference/cli/commands/fs/watch.md'
+          - 'reference/cli/commands/fs/write.md'
+        - Generate:
+          - 'reference/cli/commands/generate/completion.md'
+          - 'reference/cli/commands/generate/config.md'
+        - 'reference/cli/commands/launch.md'
+        - Manager:
+          - Manager: 'reference/cli/commands/manager/index.md'
+          - 'reference/cli/commands/manager/capabilities.md'
+          - 'reference/cli/commands/manager/info.md'
+          - 'reference/cli/commands/manager/kill.md'
+          - 'reference/cli/commands/manager/list.md'
+          - 'reference/cli/commands/manager/listen.md'
+          - 'reference/cli/commands/manager/select.md'
+          - 'reference/cli/commands/manager/service.md'
+        - Server:
+          - Server: 'reference/cli/commands/server/index.md'
+          - 'reference/cli/commands/server/listen.md'
+        - 'reference/cli/commands/shell.md'
+        - 'reference/cli/commands/spawn.md'
+        - 'reference/cli/commands/system-info.md'
+        - 'reference/cli/commands/version.md'
+      - Guides:
+        - 'reference/cli/guides/spawning-the-manager.md'
   - About:
     - 'about/overview.md'
     - 'about/features.md'
@@ -29,12 +73,17 @@ theme:
   logo: assets/logo.svg
   custom_dir: overrides
   features:
-    - navigation.expand
+    - navigation.indexes
     - navigation.instant
+    - navigation.instant.prefetch
+    - navigation.path
     - navigation.tabs
     - navigation.tracking
-  palette:
   palette: 
+    - media: "(prefers-color-scheme)"
+      toggle:
+        icon: material/brightness-auto
+        name: Switch to system preference
     - media: "(prefers-color-scheme: light)"
       scheme: default
       primary: custom
@@ -53,8 +102,21 @@ theme:
 markdown_extensions:
   - abbr
   - admonition
+  - attr_list
+  - footnotes
+  - md_in_html
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
   - pymdownx.highlight
+  - pymdownx.inlinehilite
   - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true 
+      slugify: !!python/object/apply:pymdownx.slugs.slugify
+        kwds:
+          case: lower
 
 plugins:
   - optimize
