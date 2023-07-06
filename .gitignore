@@ -2,3 +2,4 @@ public/
 site/
 macros/__pycache__/
 .cache/
+__pycache__/
