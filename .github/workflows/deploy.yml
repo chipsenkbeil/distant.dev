@@ -27,5 +27,8 @@ jobs:
       - name: Install Mkdocs plugins
         run: |
           pip install mkdocs-macros-plugin 
+      - name: Install system dependencies
+        run: |
+          apt-get install -y pngquant
       - name: Redeploy website
         run: mkdocs gh-deploy --force

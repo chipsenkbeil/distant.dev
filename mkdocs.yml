@@ -57,6 +57,7 @@ markdown_extensions:
   - pymdownx.superfences
 
 plugins:
+  - optimize
   - search
   - macros:
       module_name: macros
