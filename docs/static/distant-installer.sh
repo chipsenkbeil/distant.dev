@@ -223,11 +223,8 @@ main() {
                 ;;
             *)
                 local _answer
-                while [ ! "$_answer" = "y" ] && [ ! "$_answer" = "n" ]; do
+                while [ ! "${_answer:-}" = "y" ] && [ ! "${_answer:-}" = "n" ]; do
                     _answer=$(prompt "Distant is already installed. Overwrite it? (y/n)" "")
-
-                    # NOTE: We have to handle unset answer by doing this check
-                    _answer=${_answer:-}
                 done
 
                 if [ "$_answer" = "y" ]; then
