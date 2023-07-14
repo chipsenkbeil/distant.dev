@@ -28,9 +28,13 @@ jobs:
           COMMIT: fa5bd3f45024328d973977db80cccd5b1df89228
         run: |
           pip install git+https://${GH_TOKEN}@github.com/squidfunk/mkdocs-material-insiders.git@${COMMIT}
-      - name: Install Mkdocs plugins
+      - name: Install Mkdocs plugins & dependencies
         run: |
           pip install mkdocs-macros-plugin 
+          pip install cairosvg pillow
+      - name: Install system dependencies
+        run: |
+          sudo apt-get install -y pngquant
       - name: Install distant (needed for help doc generation)
         run: |
           curl -L https://sh.distant.dev | sh -s -- --on-conflict fail
