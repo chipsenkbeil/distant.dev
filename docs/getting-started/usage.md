@@ -89,14 +89,14 @@ distant, you must specify the port here.
 {{ asciinema("/assets/videos/distant-server-listen-foreground.cast") }}
 
 Normally, you do not need to start a distant server manually. The act of
-[launching](#launching) described up will start the server for you; however,
-there may be times where it is desirable to start the server yourself.
+[launching](#launching) described above will start the server for you;
+however, there may be times where it is desirable to start the server yourself.
 
 ```sh
 distant server listen
 ```
 
-The above starts a server that listens in the foreground. The fork the process
+The above starts a server that listens in the foreground. To fork the process
 (or detach on Windows), you can supply the `--daemon` flag.
 
 Notice the distinct URI printed out by the server when listening. This is

@@ -28,7 +28,6 @@ nav:
         - 'reference/cli/commands/api.md'
         - 'reference/cli/commands/connect.md'
         - Filesystem:
-          - Filesystem: 'reference/cli/commands/fs/index.md'
           - 'reference/cli/commands/fs/copy.md'
           - 'reference/cli/commands/fs/exists.md'
           - 'reference/cli/commands/fs/make-dir.md'
@@ -46,13 +45,13 @@ nav:
         - 'reference/cli/commands/launch.md'
         - Manager:
           - Manager: 'reference/cli/commands/manager/index.md'
-          - 'reference/cli/commands/manager/capabilities.md'
           - 'reference/cli/commands/manager/info.md'
           - 'reference/cli/commands/manager/kill.md'
           - 'reference/cli/commands/manager/list.md'
           - 'reference/cli/commands/manager/listen.md'
           - 'reference/cli/commands/manager/select.md'
           - 'reference/cli/commands/manager/service.md'
+          - 'reference/cli/commands/manager/version.md'
         - Server:
           - Server: 'reference/cli/commands/server/index.md'
           - 'reference/cli/commands/server/listen.md'

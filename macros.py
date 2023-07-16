@@ -53,6 +53,11 @@ def define_env(env):
         return html
 
     @env.macro
+    def issue(num):
+        base_url = "https://github.com/chipsenkbeil/distant/issues"
+        return "<a href=\"" + base_url + "/" + str(num) + "\">#" + str(num) + "</a>"
+
+    @env.macro
     def run(cmd, admonition=None, title=None, lang=None, collapsible=True, expanded=False):
         # Start by capturing everything
         stdout = subprocess.PIPE
