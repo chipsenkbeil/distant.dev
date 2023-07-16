@@ -44,7 +44,6 @@ nav:
           - 'reference/cli/commands/generate/config.md'
         - 'reference/cli/commands/launch.md'
         - Manager:
-          - Manager: 'reference/cli/commands/manager/index.md'
           - 'reference/cli/commands/manager/info.md'
           - 'reference/cli/commands/manager/kill.md'
           - 'reference/cli/commands/manager/list.md'
@@ -53,7 +52,6 @@ nav:
           - 'reference/cli/commands/manager/service.md'
           - 'reference/cli/commands/manager/version.md'
         - Server:
-          - Server: 'reference/cli/commands/server/index.md'
           - 'reference/cli/commands/server/listen.md'
         - 'reference/cli/commands/shell.md'
         - 'reference/cli/commands/spawn.md'
