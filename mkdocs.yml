@@ -59,6 +59,10 @@ nav:
         - 'reference/cli/commands/version.md'
       - Guides:
         - 'reference/cli/guides/spawning-the-manager.md'
+      - JSON API:
+        - JSON API: 'reference/cli/json-api/index.md'
+        - 'reference/cli/json-api/authentication.md'
+        - 'reference/cli/json-api/messages.md'
   - About:
     - 'about/overview.md'
     - 'about/features.md'
