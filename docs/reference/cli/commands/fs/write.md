@@ -34,4 +34,4 @@ distant fs write --append /path/to/file.txt 'some text'
 * If no contents are provided, then the contents are read from *stdin*.
 * Relative paths resolve to the current working directory of the server.
 
-{{ run("distant fs watch --help", admonition="info") }}
+{{ run("distant fs write --help", admonition="info") }}
