@@ -70,6 +70,6 @@
 [15.633825, "o", "l"]
 [15.761541, "o", "l"]
 [16.178636, "o", "\r\n"]
-[16.28474, "o", "/usr/bin:/bin:/usr/sbin:/sbin:/Users/senkwich/.cargo/bin\r\n"]
+[16.28474, "o", "/usr/bin:/bin:/usr/sbin:/sbin:/path/to/.cargo/bin\r\n"]
 [16.29174, "o", "sh-3.2$ "]
 [17.896293, "o", "exit\r\n"]
