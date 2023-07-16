@@ -1,5 +1,11 @@
 Retrieves information about the remote system where the server is running.
 
+```sh
+distant system-info
+```
+
+### Returned Information
+
 | Name      | Description                                           | Example           |
 | --------- | ----------------------------------------------------- | ----------------- |
 | Family    | Family of the operating system (e.g. unix/windows)    | "unix"            |

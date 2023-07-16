@@ -1,5 +1,11 @@
 Retrieves version information of the remote server.
 
+```sh
+distant version
+```
+
+### Returned Information
+
 | Name              | Description                                                               | Example           |
 | ----------------- | ------------------------------------------------------------------------- | ----------------- |
 | Server Version    | The version of the server                                                 | 0.20.0            |
