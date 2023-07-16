@@ -1,7 +1,7 @@
-Retrieve information about a specific connection.
+List information about all connections.
 
 ```sh
-distant manager info 1234
+distant manager list
 ```
 
 ### Flags
@@ -10,8 +10,12 @@ distant manager info 1234
   specified, information will be printed in this form:
   
     ```json
-    { "id": 1234, "destination": "...", "options": "..." }
+    { "<ID>": "<DESTINATION>" }
     ```
+    
+    where `<ID>` is the connection's numeric id, but used as a string key in
+    *json* and `<DESTINATION>` is the destination string used to launch/connect
+    to the server.
     
     Any error encountered will be captured and printed in this form:
   
@@ -25,10 +29,11 @@ distant manager info 1234
     
 ### Returned Information
 
+For each connection, its id and destination are printed:
+
 | Name         | Description                                          | Example               |
 | ------------ | -----------------------------------------------------| --------------------- |
 | id           | The numeric id of the connection                     | 1234                  |
 | destination  | The destination string used to connect to the server | distant://example.com |
-| options      | Additional options provided during launch/connect    | "verbose=true"        |
 
 {{ run("distant manager list --help", admonition="info") }}
