@@ -11,20 +11,20 @@ paths.
         "condition": {},
         "paths": [],
         "options": {
-        "allowed_file_types": [],
-        "include": {},
-        "exclude": {},
-        "upward": false,
-        "follow_symbolic_links": false,
-        "limit": 1234,
-        "max_depth": 1234,
-        "pagination": 1234,
-        "ignore_hidden": false,
-        "use_ignore_files": false,
-        "use_parent_ignore_files": false,
-        "use_git_ignore_files": false,
-        "use_global_git_ignore_files": false,
-        "use_git_exclude_files": false
+            "allowed_file_types": [],
+            "include": {},
+            "exclude": {},
+            "upward": false,
+            "follow_symbolic_links": false,
+            "limit": 1234,
+            "max_depth": 1234,
+            "pagination": 1234,
+            "ignore_hidden": false,
+            "use_ignore_files": false,
+            "use_parent_ignore_files": false,
+            "use_git_ignore_files": false,
+            "use_global_git_ignore_files": false,
+            "use_git_exclude_files": false
         }
     }
 }
