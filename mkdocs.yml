@@ -20,11 +20,13 @@ nav:
     - Editors: 'editors/index.md'
     - Neovim:
       - Neovim: 'editors/neovim/index.md'
+      - 'editors/neovim/quickstart.md'
       - 'editors/neovim/installation.md'
       - 'editors/neovim/setup.md'
       - 'editors/neovim/commands.md'
       - 'editors/neovim/navigation.md'
       - 'editors/neovim/lua.md'
+      - FAQ: 'editors/neovim/faq.md'
   - Reference:
     - CLI:
       - Config:

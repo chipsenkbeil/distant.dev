@@ -7,7 +7,7 @@
     Install [`distant`](#) using our [installation script](/getting-started/installation/)
     and get a remote session going in minutes.
 
-    [:octicons-arrow-right-24: Install & Go](installation)
+    [:octicons-arrow-right-24: Quickstart](quickstart)
 
 -   :simple-lua:{ .lg .middle } __Configure in Lua__
 
@@ -44,5 +44,13 @@
     the more advanced functionality available.
 
     [:octicons-arrow-right-24: Explore](lua)
+
+-   :octicons-question-16:{ .lg .middle } __Have questions?__
+
+    ---
+
+    Check out the FAQ for answers to commonly-asked questions.
+
+    [:octicons-arrow-right-24: FAQ](faq)
 
 </div>
