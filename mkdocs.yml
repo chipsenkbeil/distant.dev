@@ -10,11 +10,21 @@ nav:
   - Home: 'index.md'
   - Getting Started:
     - Installation:
+      - Installation: 'getting-started/installation/index.md'
       - 'getting-started/installation/unix.md'
       - 'getting-started/installation/windows.md'
       - 'getting-started/installation/manually-download.md'
       - 'getting-started/installation/from-source.md'
     - 'getting-started/usage.md'
+  - Editors:
+    - Editors: 'editors/index.md'
+    - Neovim:
+      - Neovim: 'editors/neovim/index.md'
+      - 'editors/neovim/installation.md'
+      - 'editors/neovim/setup.md'
+      - 'editors/neovim/commands.md'
+      - 'editors/neovim/navigation.md'
+      - 'editors/neovim/lua.md'
   - Reference:
     - CLI:
       - Config:
@@ -99,6 +109,7 @@ theme:
   logo: assets/logo.svg
   custom_dir: overrides
   features:
+    - content.code.copy
     - navigation.indexes
     - navigation.instant
     - navigation.instant.prefetch
