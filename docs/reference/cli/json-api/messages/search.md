@@ -243,6 +243,6 @@ message:
 ```json
 {
     "type": "search_done",
-    "id":1234 
+    "id": 1234
 }
 ```
