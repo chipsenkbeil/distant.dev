@@ -18,7 +18,7 @@ plugin:setup({
 
 === "Value"
 
-    Boolean representing watch logic being enabled. **[default: false]**
+    Boolean representing watch logic being enabled. **[default: true]**
 
 ```lua title="Example"
 {
