@@ -106,6 +106,10 @@ nav:
           - 'reference/cli/json-api/messages/unwatch.md'
           - 'reference/cli/json-api/messages/version.md'
           - 'reference/cli/json-api/messages/watch.md'
+    - Editors:
+      - Neovim:
+        - Guides:
+          - 'reference/editors/neovim/guides/statusline.md'
   - About:
     - 'about/overview.md'
     - 'about/features.md'
