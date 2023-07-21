@@ -1,3 +1,36 @@
+## Why would I use this plugin over neovim 0.9's remote TUI?
+
+The primary difference to consider is that the neovim remote TUI functionality
+operates on keystrokes and mouse input while distant does networking through
+actions:
+
+* With keystrokes and mouse input, everything you type such as navigating
+  through a file, highlighting text, yanking text, or changing a word gets
+  communicated to the remote neovim instance. This means that network latency
+  can have a major impact on your editing experience causing stuttering or
+  other noticeable delays.
+
+* In contrast with actions, distant only sends network traffic for operations
+  like writing and reading a file or executing a program. This means that your
+  typing experience is **not** impacted by network latency. Distant only sends
+  requests when you do something that needs to interact remotely.
+
+In addition to reducing the impact of network latency, distant also offers some
+additional features which - at the time of neovim 0.9 - are additional
+advantages over neovim's TUI:
+
+* **Security**: distant provides authentication and encryption using a modern
+  AEAD algorithm, [ChaCha20-Poly1305][chacha20-poly1305] (specifically
+  XChaCha20-Poly1305).
+
+* **Programability**: distant and distant.nvim provide a well-defined API to
+  leverage the full suite of functionality including file IO, searching,
+  watching, and process execution.
+
+* **Persistence**: distant supports persistent connections over TCP that will
+  reconnect when the network is dropped, enabling more stable and consistent
+  interactions with the remote machine.
+
 ## How does this plugin differ from using neovim with sshfs?
 
 There are a couple of primary differences that come to mind:
@@ -41,6 +74,7 @@ If you want to think of what this more closely relates to, then take a look at
 [VS Code Remote Development][vscode_remote] or the formerly-active [Nuclide
 project][nuclide].
 
+[chacha20-poly1305]: https://en.wikipedia.org/wiki/ChaCha20-Poly1305
 [distant]: https://github.com/chipsenkbeil/distant
 [distant.nvim]: https://github.com/chipsenkbeil/distant.nvim
 [fuse]: https://en.wikipedia.org/wiki/Filesystem_in_Userspace
