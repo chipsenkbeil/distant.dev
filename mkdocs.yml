@@ -31,7 +31,21 @@ nav:
         - 'editors/neovim/setup/network.md'
       - 'editors/neovim/commands.md'
       - 'editors/neovim/navigation.md'
-      - 'editors/neovim/lua.md'
+      - Lua:
+        - Lua: 'editors/neovim/lua/index.md'
+        - 'editors/neovim/lua/initialization.md'
+        - Connection management: 'editors/neovim/lua/connections.md'
+        - 'editors/neovim/lua/settings.md'
+        - 'editors/neovim/lua/api.md'
+        - 'editors/neovim/lua/buffers.md'
+        - 'editors/neovim/lua/editor.md'
+        - 'editors/neovim/lua/events.md'
+        - 'editors/neovim/lua/shells.md'
+        - Wrapping commands: 'editors/neovim/lua/wrapping.md'
+        - 'editors/neovim/lua/version.md'
+        - 'editors/neovim/lua/utilities.md'
+        - Core:
+          - 'editors/neovim/lua/core/job.md'
       - FAQ: 'editors/neovim/faq.md'
   - Reference:
     - CLI:

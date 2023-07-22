@@ -52,4 +52,4 @@ Check out the following documentation for different settings:
 
 </div>
 
-[distant:setup()]: TODO
+[distant:setup()]: ../lua#initialization
