@@ -46,6 +46,7 @@ nav:
         - 'editors/neovim/lua/utilities.md'
         - Core:
           - 'editors/neovim/lua/core/job.md'
+          - 'editors/neovim/lua/core/version.md'
       - FAQ: 'editors/neovim/faq.md'
   - Reference:
     - CLI:
