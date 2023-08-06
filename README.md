@@ -5,7 +5,7 @@ This website uses
 [mkdocs](https://www.mkdocs.org/) to generate itself.
 
 ```sh
-pip3 install mkdocs-material
+pip install mkdocs-material
 ```
 
 ## Insiders Edition
@@ -22,7 +22,7 @@ plugin](https://mkdocs-macros-plugin.readthedocs.io/en/latest/), which needs to
 be installed separately as it is not bundled in with mkdocs-material.
 
 ```sh
-pip3 install mkdocs-macros-plugin
+pip install mkdocs-macros-plugin
 ```
 
 ## Optimize Plugin
@@ -40,6 +40,16 @@ brew install pngquant
 # For cairosvg, it's also recommended to install dependencies
 brew install cairo freetype libffi libjpeg libpng zlib
 ```
+
+## Mermaid2 Plugin
+
+This plugin needs to be installed manually:
+
+```sh
+pip install mkdocs-mermaid2-plugin
+```
+
+We use this to support generating visuals from code-fenced mermaid.
 
 ## Distant binary
 
