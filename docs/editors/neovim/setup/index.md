@@ -49,6 +49,7 @@ Check out the following documentation for different settings:
 - :material-keyboard:{ .lg .middle } [Neovim keymappings](keymap){ .middle }
 - :material-graph:{ .lg .middle } [Manager binary](manager){ .middle }
 - :material-network:{ .lg .middle } [Distant networking](network){ .middle }
+- :material-server:{ .lg .middle } [Server configurations](servers){ .middle }
 
 </div>
 

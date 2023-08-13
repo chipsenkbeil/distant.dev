@@ -29,6 +29,7 @@ nav:
         - 'editors/neovim/setup/keymap.md'
         - 'editors/neovim/setup/manager.md'
         - 'editors/neovim/setup/network.md'
+        - 'editors/neovim/setup/servers.md'
       - 'editors/neovim/commands.md'
       - 'editors/neovim/navigation.md'
       - Lua:
