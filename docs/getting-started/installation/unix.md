@@ -9,7 +9,7 @@ default version and host. distant will be installed to
 curl -L https://sh.distant.dev | sh
 
 # Can also use wget to the same result
-wget https://sh.distant.dev | sh
+wget -q -O- https://sh.distant.dev | sh
 ```
 
 ## Advanced Installation
