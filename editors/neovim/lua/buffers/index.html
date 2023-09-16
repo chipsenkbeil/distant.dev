@@ -1,0 +1,5381 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Libraries and tooling for working remotely">
+      
+      
+        <meta name="author" content="Chip Senkbeil">
+      
+      
+        <link rel="canonical" href="https://distant.dev/editors/neovim/lua/buffers/">
+      
+      
+        <link rel="prev" href="../api/">
+      
+      
+        <link rel="next" href="../editor/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.5.2, mkdocs-material-9.1.18+insiders-4.36.1">
+    
+    
+      
+        <title>Buffers - Distant</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.cac7c1ad.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ecc776e4.min.css">
+      
+      
+
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/asciinema-player.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#buffer-interface" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../../.." title="Distant" class="md-header__button md-logo" aria-label="Distant" data-md-component="logo">
+      
+  <img src="../../../../assets/logo.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Distant
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Buffers
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+          
+            
+            
+            
+            <input class="md-option" data-md-color-media="(prefers-color-scheme)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to system preference"  type="radio" name="__palette" id="__palette_0">
+            
+              <label class="md-header__button md-icon" title="Switch to system preference" for="__palette_1" hidden>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m14.3 16-.7-2h-3.2l-.7 2H7.8L11 7h2l3.2 9h-1.9M20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69m-9.15 3.96h2.3L12 9l-1.15 3.65Z"/></svg>
+              </label>
+            
+          
+            
+            
+            
+            <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+            
+              <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"/></svg>
+              </label>
+            
+          
+            
+            
+            
+            <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_2">
+            
+              <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12c0-2.42-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"/></svg>
+              </label>
+            
+          
+        </form>
+      
+    
+    
+      <script>var media,input,key,value,palette=__md_get("__palette");if(palette&&palette.color){"(prefers-color-scheme)"===palette.color.media&&(media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']"),palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent"));for([key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/chipsenkbeil/distant" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../.." class="md-tabs__link">
+        
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+    
+      
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../getting-started/installation/" class="md-tabs__link">
+          
+  
+    
+  
+  Getting Started
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../" class="md-tabs__link md-tabs__link--active">
+          
+  
+    
+  
+  Editors
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      
+  
+  
+  
+    
+    
+      
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../reference/cli/config/" class="md-tabs__link">
+          
+  
+    
+  
+  Reference
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../about/overview/" class="md-tabs__link">
+          
+  
+    
+  
+  About
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="Distant" class="md-nav__button md-logo" aria-label="Distant" data-md-component="logo">
+      
+  <img src="../../../../assets/logo.svg" alt="logo">
+
+    </a>
+    Distant
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/chipsenkbeil/distant" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Getting Started
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_1" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../../getting-started/installation/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              <label class="md-nav__link " for="__nav_2_1">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Installation
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../getting-started/installation/unix/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Unix
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../getting-started/installation/windows/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Windows
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../getting-started/installation/manually-download/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Manually download
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../getting-started/installation/from-source/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    From source
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../getting-started/usage/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Usage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    
+  
+    Editors
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              <label class="md-nav__link " for="__nav_3">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Editors
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+    
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" checked>
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    
+  
+    Neovim
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              <label class="md-nav__link " for="__nav_3_2">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Neovim
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../quickstart/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Quickstart
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../installation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_4" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../setup/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    
+  
+    Setup
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              <label class="md-nav__link " for="__nav_3_2_4">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Setup
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../setup/buffer/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Buffer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../setup/client/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Client
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../setup/keymap/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Keymap
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../setup/manager/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Manager
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../setup/network/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Network
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../setup/servers/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Servers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../commands/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Commands
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../navigation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Navigation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_7" checked>
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    
+  
+    Lua
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              <label class="md-nav__link " for="__nav_3_2_7">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_7_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_2_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Lua
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../initialization/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Initialization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../connections/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Connection management
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../settings/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Settings
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Api
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    
+  
+    Buffers
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Buffers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#buffer-interface" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Buffer interface
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#data-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data API
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Data API">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#data-table" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data table
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Data table">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#retrieving-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Retrieving data
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#modifying-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Modifying data
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#client-id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Client id
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#path" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Path
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#alternate-paths" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Alternate paths
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#type" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Type
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#modification-time" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Modification time
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#watched" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Watched
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#name-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Name API
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Name API">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#default-format" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Default format
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#prefix" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prefix
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Prefix">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parsing-from-an-explicit-name" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parsing from an explicit name
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#parsing-from-the-buffers-name" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parsing from the buffer's name
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#building-from-components" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Building from components
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#building-a-name" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Building a name
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#parsing-a-name" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parsing a name
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#search-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Search API
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../editor/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Editor
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../events/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../shells/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Shells
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../wrapping/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Wrapping commands
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../version/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Version
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../utilities/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Utilities
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_7_13" >
+        
+          <label class="md-nav__link" for="__nav_3_2_7_13" id="__nav_3_2_7_13_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    
+  
+    Core
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_3_2_7_13_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_7_13">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Core
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../core/job/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Job
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../core/version/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Version
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../faq/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    FAQ
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1" >
+        
+          <label class="md-nav__link" for="__nav_4_1" id="__nav_4_1_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    
+  
+    CLI
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    CLI
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_1" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../../reference/cli/config/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    
+  
+    Config
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              <label class="md-nav__link " for="__nav_4_1_1">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_1_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Config
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../reference/cli/config/client/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Client
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../reference/cli/config/generate/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Generate
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../reference/cli/config/manager/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Manager
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../reference/cli/config/server/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Server
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_2" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../../reference/cli/commands/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    
+  
+    Commands
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              <label class="md-nav__link " for="__nav_4_1_2">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_1_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Commands
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../reference/cli/commands/api/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Api
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../reference/cli/commands/connect/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Connect
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_2_4" >
+        
+          <label class="md-nav__link" for="__nav_4_1_2_4" id="__nav_4_1_2_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    
+  
+    Filesystem
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_4_1_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_2_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Filesystem
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../reference/cli/commands/fs/copy/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Copy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../reference/cli/commands/fs/exists/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Exists
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../reference/cli/commands/fs/make-dir/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Make dir
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../reference/cli/commands/fs/metadata/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Metadata
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../reference/cli/commands/fs/read/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Read
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../reference/cli/commands/fs/remove/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Remove
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../reference/cli/commands/fs/rename/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Rename
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../reference/cli/commands/fs/search/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Search
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../reference/cli/commands/fs/set-permissions/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Set permissions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../reference/cli/commands/fs/watch/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Watch
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../reference/cli/commands/fs/write/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Write
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_2_5" >
+        
+          <label class="md-nav__link" for="__nav_4_1_2_5" id="__nav_4_1_2_5_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    
+  
+    Generate
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_4_1_2_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_2_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Generate
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../reference/cli/commands/generate/completion/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Completion
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../reference/cli/commands/generate/config/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Config
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../reference/cli/commands/launch/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Launch
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_2_7" >
+        
+          <label class="md-nav__link" for="__nav_4_1_2_7" id="__nav_4_1_2_7_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    
+  
+    Manager
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_4_1_2_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_2_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Manager
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../reference/cli/commands/manager/info/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Info
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../reference/cli/commands/manager/kill/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Kill
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../reference/cli/commands/manager/list/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    List
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../reference/cli/commands/manager/listen/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Listen
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../reference/cli/commands/manager/select/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Select
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../reference/cli/commands/manager/service/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Service
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../reference/cli/commands/manager/version/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Version
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_2_8" >
+        
+          <label class="md-nav__link" for="__nav_4_1_2_8" id="__nav_4_1_2_8_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    
+  
+    Server
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_4_1_2_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_2_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Server
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../reference/cli/commands/server/listen/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Listen
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../reference/cli/commands/shell/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Shell
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../reference/cli/commands/spawn/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Spawn
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../reference/cli/commands/system-info/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    System info
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../reference/cli/commands/version/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Version
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_3" >
+        
+          <label class="md-nav__link" for="__nav_4_1_3" id="__nav_4_1_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    
+  
+    Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_1_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Guides
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../reference/cli/guides/spawning-the-manager/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Spawning the manager
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_4" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../../reference/cli/json-api/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    
+  
+    JSON API
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              <label class="md-nav__link " for="__nav_4_1_4">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_1_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    JSON API
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../reference/cli/json-api/authentication/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Authentication
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_4_3" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../../reference/cli/json-api/messages/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    
+  
+    Messages
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              <label class="md-nav__link " for="__nav_4_1_4_3">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_4_1_4_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_4_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Messages
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../reference/cli/json-api/messages/cancel_search/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Cancel search
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../reference/cli/json-api/messages/copy/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Copy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../reference/cli/json-api/messages/dir_create/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Dir create
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../reference/cli/json-api/messages/dir_read/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Dir read
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../reference/cli/json-api/messages/exists/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Exists
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../reference/cli/json-api/messages/file_append/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    File append
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../reference/cli/json-api/messages/file_append_text/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    File append text
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../reference/cli/json-api/messages/file_read/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    File read
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../reference/cli/json-api/messages/file_read_text/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    File read text
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../reference/cli/json-api/messages/file_write/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    File write
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../reference/cli/json-api/messages/file_write_text/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    File write text
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../reference/cli/json-api/messages/metadata/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Metadata
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../reference/cli/json-api/messages/proc_kill/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Proc kill
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../reference/cli/json-api/messages/proc_resize_pty/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Proc resize pty
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../reference/cli/json-api/messages/proc_spawn/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Proc spawn
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../reference/cli/json-api/messages/proc_stdin/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Proc stdin
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../reference/cli/json-api/messages/remove/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Remove
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../reference/cli/json-api/messages/rename/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Rename
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../reference/cli/json-api/messages/search/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Search
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../reference/cli/json-api/messages/set_permissions/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Set permissions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../reference/cli/json-api/messages/system_info/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    System info
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../reference/cli/json-api/messages/unwatch/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Unwatch
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../reference/cli/json-api/messages/version/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Version
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../reference/cli/json-api/messages/watch/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Watch
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2" >
+        
+          <label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    
+  
+    Editors
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Editors
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2_1" >
+        
+          <label class="md-nav__link" for="__nav_4_2_1" id="__nav_4_2_1_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    
+  
+    Neovim
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_2_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_2_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Neovim
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2_1_1" >
+        
+          <label class="md-nav__link" for="__nav_4_2_1_1" id="__nav_4_2_1_1_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    
+  
+    Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_4_2_1_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_2_1_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Guides
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../reference/editors/neovim/guides/statusline/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Statusline
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    
+  
+    About
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    About
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../about/overview/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../about/features/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Features
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../about/architecture/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#buffer-interface" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Buffer interface
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#data-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data API
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Data API">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#data-table" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data table
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Data table">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#retrieving-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Retrieving data
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#modifying-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Modifying data
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#client-id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Client id
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#path" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Path
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#alternate-paths" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Alternate paths
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#type" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Type
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#modification-time" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Modification time
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#watched" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Watched
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#name-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Name API
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Name API">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#default-format" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Default format
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#prefix" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prefix
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Prefix">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parsing-from-an-explicit-name" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parsing from an explicit name
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#parsing-from-the-buffers-name" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parsing from the buffer's name
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#building-from-components" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Building from components
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#building-a-name" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Building a name
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#parsing-a-name" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parsing a name
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#search-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Search API
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+                
+
+
+
+  
+
+
+  <nav class="md-path" aria-label="Navigation" >
+    <ol class="md-path__list">
+      
+        
+  
+    <li class="md-path__item">
+      <a href="../../../.." class="md-path__link">
+        
+  <span class="md-ellipsis">
+    Home
+  </span>
+
+      </a>
+    </li>
+  
+
+      
+      
+        
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../../../" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Editors
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../../" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Neovim
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Lua
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ol>
+  </nav>
+
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+  <h1>Buffers</h1>
+
+<p>For buffers managed by distant, the plugin interface exposes a <code>buf</code> field that
+enables you to access and manipulate distant-specific information tied to a
+buffer as well as search for specific remote buffers.</p>
+<h2 id="buffer-interface">Buffer interface</h2>
+<p>By default, if you access the <code>buf</code> field, all data operations will apply to
+the current buffer:</p>
+<div class="highlight"><pre><span></span><code><span class="c1">-- Will retrieve distant-specific data for the current buffer</span>
+<span class="n">plugin</span><span class="p">.</span><span class="n">buf</span><span class="p">.</span><span class="n">get_data</span><span class="p">()</span>
+</code></pre></div>
+<p>If you want to access or manipulate data for a specific buffer, you can instead
+invoke <code>buf</code> as a function, providing the buffer's id as the argument:</p>
+<div class="highlight"><pre><span></span><code><span class="c1">-- Will retrieve distant-specific data for buffer whose number is 123</span>
+<span class="n">plugin</span><span class="p">.</span><span class="n">buf</span><span class="p">(</span><span class="mi">123</span><span class="p">).</span><span class="n">get_data</span><span class="p">()</span>
+</code></pre></div>
+<h2 id="data-api">Data API</h2>
+<p>The primary API exposed by the buffer interface is retrieving and manipulating
+distant-specific information. All of the information is stored in the
+buffer-local variable <code>distant</code>, which you can access within neovim through the
+scoped variable <code>b:distant</code>.</p>
+<p>The buffer interface exposes methods to simplify accessing and manipulating
+specific portions or the entire data stored in the buffer.</p>
+<h3 id="data-table">Data table</h3>
+<p>If you directly access the data stored in <code>b:distant</code>, you will find a table
+comprised of the following fields, not all of which may be present:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>client_id</td>
+<td>Numeric id of the connection associated with the buffer</td>
+</tr>
+<tr>
+<td>path</td>
+<td>Path on the remote machine (no scheme)</td>
+</tr>
+<tr>
+<td>alt_paths</td>
+<td>Alternative paths, usually relative, that also map to the primary path</td>
+</tr>
+<tr>
+<td>type</td>
+<td>Indicates the path type (<code>dir</code> or <code>file</code>)</td>
+</tr>
+<tr>
+<td>mtime</td>
+<td>Numeric UNIX timestamp (in seconds) representing last modified time remotely</td>
+</tr>
+<tr>
+<td>watched</td>
+<td>Watched state, which can be <code>false</code>, <code>true</code>, or <code>"locked"</code></td>
+</tr>
+</tbody>
+</table>
+<h4 id="retrieving-data">Retrieving data</h4>
+<p>You can retrieve the data as a Lua table using <code>data</code> like below:</p>
+<div class="highlight"><pre><span></span><code><span class="c1">-- This can be a Lua table or nil if b:distant is not present</span>
+<span class="kd">local</span> <span class="n">data</span> <span class="o">=</span> <span class="n">plugin</span><span class="p">.</span><span class="n">buf</span><span class="p">.</span><span class="n">data</span><span class="p">()</span>
+</code></pre></div>
+<p>If you want to check for the presence of data before accessing it, you can use
+the <code>has_data</code> function:</p>
+<div class="highlight"><pre><span></span><code><span class="kr">if</span> <span class="n">plugin</span><span class="p">.</span><span class="n">buf</span><span class="p">.</span><span class="n">has_data</span><span class="p">()</span> <span class="kr">then</span>
+    <span class="c1">-- Do something if the buffer has data.</span>
+    <span class="c1">-- You can use this to assert that a buffer is remote!</span>
+<span class="kr">end</span>
+</code></pre></div>
+<h4 id="modifying-data">Modifying data</h4>
+<p>If you want to modify the data as a whole, there are two means to do this:</p>
+<ol>
+<li>Call <code>set_data(data)</code>, passing it a new table to use. Be careful with this
+   method, is it is easy to corrupt the state of a buffer. Prefer more specific
+   methods instead.</li>
+<li>Call <code>mutate_data(fn)</code>, which takes a function to modify and return a table
+   to be used as the new data.</li>
+</ol>
+<div class="highlight"><pre><span></span><code><span class="c1">-- Set distant data directly</span>
+<span class="c1">-- Will return true if successful</span>
+<span class="n">plugin</span><span class="p">.</span><span class="n">buf</span><span class="p">.</span><span class="n">set_data</span><span class="p">({</span> <span class="n">client_id</span> <span class="o">=</span> <span class="mi">123</span><span class="p">,</span> <span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;/path/to/file.txt&#39;</span> <span class="p">})</span>
+
+<span class="c1">-- Mutate distant data</span>
+<span class="c1">-- Will return true if successful</span>
+<span class="n">plugin</span><span class="p">.</span><span class="n">buf</span><span class="p">.</span><span class="n">mutate_data</span><span class="p">(</span><span class="kr">function</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+  <span class="n">data</span><span class="p">.</span><span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;/path/to/file.txt&#39;</span>
+  <span class="kr">return</span> <span class="n">data</span>
+<span class="kr">end</span><span class="p">)</span>
+</code></pre></div>
+<p>Lastly, if you want to remove all remote information from a buffer, you can
+call <code>clear</code>; however, this is discouraged unless you REALLY know what you are
+doing:</p>
+<div class="highlight"><pre><span></span><code><span class="c1">-- Will return true if successful</span>
+<span class="n">plugin</span><span class="p">.</span><span class="n">buf</span><span class="p">.</span><span class="n">clear</span><span class="p">()</span>
+</code></pre></div>
+<h3 id="client-id">Client id</h3>
+<p>If you need to work with the client id (aka connection) associated with the
+buffer, there are two methods:</p>
+<ul>
+<li><code>set_client_id(id)</code> is used to update the client id of the buffer</li>
+<li><code>client_id()</code> is used to retrieve the client id of the buffer</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="kd">local</span> <span class="n">id</span> <span class="o">=</span> <span class="n">plugin</span><span class="p">.</span><span class="n">buf</span><span class="p">.</span><span class="n">client_id</span><span class="p">()</span>
+
+<span class="c1">-- Will return true if successful</span>
+<span class="n">plugin</span><span class="p">.</span><span class="n">buf</span><span class="p">.</span><span class="n">set_client_id</span><span class="p">(</span><span class="mi">123</span><span class="p">)</span>
+</code></pre></div>
+<h3 id="path">Path</h3>
+<p>Representing the primary remote path associated with the buffer, this is
+populated when a file or directory is first opened. The <code>path</code> should be the
+canonicalized path provided by the server, meaning that any symlinks or
+relative components are resolved.</p>
+<ul>
+<li><code>set_path(path)</code> is used to update the buffer's path</li>
+<li><code>path()</code> is used to retrieve the buffer's path</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="kd">local</span> <span class="n">path</span> <span class="o">=</span> <span class="n">plugin</span><span class="p">.</span><span class="n">buf</span><span class="p">.</span><span class="n">path</span><span class="p">()</span>
+
+<span class="c1">-- Will return true if successful</span>
+<span class="n">plugin</span><span class="p">.</span><span class="n">buf</span><span class="p">.</span><span class="n">set_path</span><span class="p">(</span><span class="s1">&#39;/path/to/file.txt&#39;</span><span class="p">)</span>
+</code></pre></div>
+<h3 id="alternate-paths">Alternate paths</h3>
+<p>Representing the alternative remote path associated with the buffer, this is a
+list of strings representing other paths that evaluate to the <code>path</code> when they
+are canonicalized. This list is updated whenever a request to open a path is
+provided that resolves to an existing buffer's path. For instance, if <code>.</code>
+resolves to <code>/path/to/file.txt</code> and you then open <code>/path/to/./file.txt</code>, the
+alternative paths should include both <code>.</code> and <code>/path/to/./file.txt</code>.</p>
+<ul>
+<li><code>set_alt_paths(paths)</code> is used to update the buffer's alternate paths</li>
+<li><code>add_alt_path(path, opts)</code> is used to append the path to the buffer's
+  alternate paths. Opts is an optional table, where specifying <code>dedup = true</code>
+  will result in the alternate paths being deduplicated.</li>
+<li><code>alt_paths()</code> is used to retrieve the buffer's alternate paths</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="c1">-- List of paths: { &#39;.&#39;, &#39;/path/to/./file.txt&#39; }</span>
+<span class="kd">local</span> <span class="n">paths</span> <span class="o">=</span> <span class="n">plugin</span><span class="p">.</span><span class="n">buf</span><span class="p">.</span><span class="n">alt_paths</span><span class="p">()</span>
+
+<span class="c1">-- Append a path to our list</span>
+<span class="n">plugin</span><span class="p">.</span><span class="n">buf</span><span class="p">.</span><span class="n">add_alt_path</span><span class="p">(</span><span class="s1">&#39;./file.txt&#39;</span><span class="p">)</span>
+
+<span class="c1">-- Append a path to our list and deduplicate the list</span>
+<span class="n">plugin</span><span class="p">.</span><span class="n">buf</span><span class="p">.</span><span class="n">add_alt_path</span><span class="p">(</span><span class="s1">&#39;./file.txt&#39;</span><span class="p">,</span> <span class="p">{</span> <span class="n">dedup</span> <span class="o">=</span> <span class="kc">true</span> <span class="p">})</span>
+
+<span class="c1">-- Will return true if successful</span>
+<span class="n">plugin</span><span class="p">.</span><span class="n">buf</span><span class="p">.</span><span class="n">set_alt_paths</span><span class="p">({</span> <span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="s1">&#39;/path/to/./file.txt&#39;</span> <span class="p">})</span>
+</code></pre></div>
+<h3 id="type">Type</h3>
+<p>Representing the file type of the remote path associated with the buffer, this
+is populated when a file or directory is first opened.</p>
+<ul>
+<li><code>set_type(ty)</code> is used to update the buffer's type</li>
+<li><code>type()</code> is used to retrieve the buffer's type</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="c1">-- Could be &#39;dir&#39; or &#39;file&#39;</span>
+<span class="kd">local</span> <span class="n">ty</span> <span class="o">=</span> <span class="n">plugin</span><span class="p">.</span><span class="n">buf</span><span class="p">.</span><span class="nb">type</span><span class="p">()</span>
+
+<span class="c1">-- Will return true if successful</span>
+<span class="n">plugin</span><span class="p">.</span><span class="n">buf</span><span class="p">.</span><span class="n">set_type</span><span class="p">(</span><span class="s1">&#39;dir&#39;</span><span class="p">)</span>
+</code></pre></div>
+<h3 id="modification-time">Modification time</h3>
+<p>Representing the last time (in seconds as Unix timestamp) the remote path
+associated with the buffer was modified. This is populated when a file or
+directory is first opened, and is updated whenever the file is reopened,
+written to locally, or a watch event is received for this buffer's path.</p>
+<ul>
+<li><code>set_mtime(mtime)</code> is used to update the buffer's modification time</li>
+<li><code>mtime()</code> is used to retrieve the buffer's modification time</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="kd">local</span> <span class="n">mtime</span> <span class="o">=</span> <span class="n">plugin</span><span class="p">.</span><span class="n">buf</span><span class="p">.</span><span class="n">mtime</span><span class="p">()</span>
+
+<span class="c1">-- Will return true if successful</span>
+<span class="n">plugin</span><span class="p">.</span><span class="n">buf</span><span class="p">.</span><span class="n">set_mtime</span><span class="p">(</span><span class="mi">1234</span><span class="p">)</span>
+</code></pre></div>
+<h3 id="watched">Watched</h3>
+<p>Representing the watch status of the remote path associated with the buffer.
+This is populated when a file or directory is first opened, and is updated
+whenever during the process of watching a file and once a file is successfully
+being watched.</p>
+<ul>
+<li><code>set_watched(watched)</code> is used to update the buffer's watch status</li>
+<li><code>watched()</code> is used to retrieve the buffer's watch status</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="c1">-- Could be false (not watched), true (actively watching), or &quot;locked&quot; meaning</span>
+<span class="c1">-- that the file is in the process of being watched or avoiding triggering</span>
+<span class="c1">-- watch events (such as when writing the file from neovim)</span>
+<span class="kd">local</span> <span class="n">watched</span> <span class="o">=</span> <span class="n">plugin</span><span class="p">.</span><span class="n">buf</span><span class="p">.</span><span class="n">watched</span><span class="p">()</span>
+
+<span class="c1">-- Will return true if successful</span>
+<span class="n">plugin</span><span class="p">.</span><span class="n">buf</span><span class="p">.</span><span class="n">set_watched</span><span class="p">(</span><span class="kc">true</span><span class="p">)</span>
+</code></pre></div>
+<h2 id="name-api">Name API</h2>
+<p>Another feature available through the buffer interface is working with buffer
+names. In order for distant to operate on multiple connections, it uses a
+distinct name format that encodes both a scheme (<code>distant</code>) and a client id
+(aka connection). There are two supported ways that this name can be
+represented:</p>
+<ul>
+<li><code>modern</code> - <code>[{SCHEME}[+{CONNECTION}]://PATH</code> (e.g.
+  <code>distant+1234://some/file.txt</code>)</li>
+<li><code>legacy</code> - <code>[{SCHEME}://[{CONNECTION}://]PATH</code> (e.g.
+  <code>distant://1234://some/file.txt</code>)</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>As of today, neovim will always use the <code>legacy</code> format. If
+<a href="https://github.com/neovim/neovim/pull/23834">neovim/23834</a> gets
+implemented, we can detect the neovim version and use the modern format;
+otherwise, we will be stuck with "legacy" forever.</p>
+</div>
+<p>All name API methods are accessible from the <code>name</code> table:</p>
+<div class="highlight"><pre><span></span><code><span class="n">plugin</span><span class="p">.</span><span class="n">buf</span><span class="p">.</span><span class="n">name</span><span class="p">.</span><span class="n">parse</span><span class="p">(</span><span class="s1">&#39;...&#39;</span><span class="p">)</span>
+</code></pre></div>
+<h3 id="default-format">Default format</h3>
+<p>Returns the default format used for parsing and building a buffer's name. Until
+<a href="https://github.com/neovim/neovim/pull/23834">neovim/23834</a> is merged, this
+will return <code>legacy</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="kd">local</span> <span class="n">format</span> <span class="o">=</span> <span class="n">plugin</span><span class="p">.</span><span class="n">buf</span><span class="p">.</span><span class="n">name</span><span class="p">.</span><span class="n">default_format</span><span class="p">()</span>
+<span class="nb">assert</span><span class="p">(</span><span class="n">format</span> <span class="o">==</span> <span class="s1">&#39;legacy&#39;</span><span class="p">)</span>
+</code></pre></div>
+<h3 id="prefix">Prefix</h3>
+<p>Returns the prefix tied to the buffer's name, a provided name, or builds a
+prefix from the given components. The function accepts an optional table to
+dictate what to parse or use to construct the prefix.</p>
+<h4 id="parsing-from-an-explicit-name">Parsing from an explicit name</h4>
+<p>If you provide <code>name</code>, it will be parsed for the prefix:</p>
+<div class="highlight"><pre><span></span><code><span class="c1">-- You can supply an optional `format` field to override the prefix format</span>
+<span class="c1">-- such as `format = &#39;legacy&#39;`</span>
+<span class="kd">local</span> <span class="n">prefix</span> <span class="o">=</span> <span class="n">plugin</span><span class="p">.</span><span class="n">buf</span><span class="p">.</span><span class="n">name</span><span class="p">.</span><span class="n">prefix</span><span class="p">({</span> <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;distant://1234//some/file.txt&#39;</span> <span class="p">})</span>
+<span class="nb">assert</span><span class="p">(</span><span class="n">prefix</span> <span class="o">==</span> <span class="s1">&#39;distant://1234&#39;</span><span class="p">)</span>
+</code></pre></div>
+<h4 id="parsing-from-the-buffers-name">Parsing from the buffer's name</h4>
+<p>If you provide no <code>name</code> or <code>scheme</code>, the buffer's name will be retrieved and
+parsed for the prefix:</p>
+<div class="highlight"><pre><span></span><code><span class="c1">-- You can supply an optional table to override the prefix format</span>
+<span class="c1">-- using { format = &#39;legacy&#39; }</span>
+<span class="kd">local</span> <span class="n">prefix</span> <span class="o">=</span> <span class="n">plugin</span><span class="p">.</span><span class="n">buf</span><span class="p">.</span><span class="n">name</span><span class="p">.</span><span class="n">prefix</span><span class="p">()</span>
+
+<span class="c1">-- Assuming the buffer&#39;s name was something like distant://1234://some/file.txt</span>
+<span class="nb">assert</span><span class="p">(</span><span class="n">prefix</span> <span class="o">==</span> <span class="s1">&#39;distant://1234&#39;</span><span class="p">)</span>
+</code></pre></div>
+<h4 id="building-from-components">Building from components</h4>
+<p>If you provide a <code>scheme</code> and an optional <code>connection</code>, it will be used to
+build a prefix:</p>
+<div class="highlight"><pre><span></span><code><span class="c1">-- You can supply an optional `format` field to override the prefix format</span>
+<span class="c1">-- such as `format = &#39;legacy&#39;`</span>
+<span class="kd">local</span> <span class="n">prefix</span> <span class="o">=</span> <span class="n">plugin</span><span class="p">.</span><span class="n">buf</span><span class="p">.</span><span class="n">name</span><span class="p">.</span><span class="n">prefix</span><span class="p">({</span> <span class="n">scheme</span> <span class="o">=</span> <span class="s1">&#39;distant&#39;</span><span class="p">,</span> <span class="n">connection</span> <span class="o">=</span> <span class="mi">1234</span> <span class="p">})</span>
+<span class="nb">assert</span><span class="p">(</span><span class="n">prefix</span> <span class="o">==</span> <span class="s1">&#39;distant://1234&#39;</span><span class="p">)</span>
+</code></pre></div>
+<h3 id="building-a-name">Building a name</h3>
+<p>The <code>build</code> function is provided to construct a complete buffer name. The
+function takes a single table as an argument, which is comprised of these
+fields:</p>
+<ul>
+<li><code>path</code>: (required) the path to the file or directory.</li>
+<li><code>scheme</code>: (optional) the scheme to use. Ideally, this is <code>distant</code>. If you do
+  not supply a scheme, the name created will resemble a local buffer.</li>
+<li><code>connection</code>: (optional) the id of the specific connection tied to the
+  buffer. If you do not supply one, it will not be included, which means that
+  the buffer would be represented by the active connection. In most cases, you
+  will want to provide the connection's id to ensure the buffer doesn't switch
+  to a different remote machine.</li>
+<li><code>format</code>: (optional) the format to use when constructing the name. If not
+  supplied, this will leverage <code>default_format()</code>.</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="kd">local</span> <span class="n">name</span> <span class="o">=</span> <span class="n">plugin</span><span class="p">.</span><span class="n">buf</span><span class="p">.</span><span class="n">name</span><span class="p">.</span><span class="n">build</span><span class="p">({</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;some/file.txt&#39;</span><span class="p">,</span>
+    <span class="n">scheme</span> <span class="o">=</span> <span class="s1">&#39;distant&#39;</span><span class="p">,</span>
+    <span class="n">connection</span> <span class="o">=</span> <span class="mi">1234</span><span class="p">,</span>
+    <span class="n">format</span> <span class="o">=</span> <span class="s1">&#39;legacy&#39;</span><span class="p">,</span>
+<span class="p">})</span>
+<span class="nb">assert</span><span class="p">(</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;distant://1234://some/file.txt&#39;</span><span class="p">)</span>
+</code></pre></div>
+<h3 id="parsing-a-name">Parsing a name</h3>
+<p>The <code>parse</code> function is provided to parse a buffer's name into its components.
+The function takes an optional table as an argument, which is comprised of
+these fields:</p>
+<ul>
+<li><code>name</code>: (optional) the buffer name to parse. If not provided, will parse the
+  buffer's name.</li>
+<li><code>format</code>: (optional) the format to use when parsing the name. If not
+  supplied, this will leverage <code>default_format()</code>.</li>
+</ul>
+<p>The returned value is a table that contains one or more of these fields:</p>
+<ul>
+<li><code>path</code>: the path represented by the buffer. This will always be populated.</li>
+<li><code>connection</code>: the numeric id of the connection. Will only appear if contained
+  in the parsed name.</li>
+<li><code>scheme</code>: the scheme associated with the buffer. Will only appear if
+  contained in the parsed name.</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="c1">-- Parses the current buffer&#39;s name with the default format</span>
+<span class="kd">local</span> <span class="n">pieces</span> <span class="o">=</span> <span class="n">plugin</span><span class="p">.</span><span class="n">buf</span><span class="p">.</span><span class="n">name</span><span class="p">.</span><span class="n">parse</span><span class="p">()</span>
+
+<span class="c1">-- Parses the specific buffer&#39;s name with the default format</span>
+<span class="kd">local</span> <span class="n">pieces</span> <span class="o">=</span> <span class="n">plugin</span><span class="p">.</span><span class="n">buf</span><span class="p">(</span><span class="mi">123</span><span class="p">).</span><span class="n">name</span><span class="p">.</span><span class="n">parse</span><span class="p">()</span>
+
+<span class="c1">-- Parses the specific name with the default format</span>
+<span class="kd">local</span> <span class="n">pieces</span> <span class="o">=</span> <span class="n">plugin</span><span class="p">.</span><span class="n">buf</span><span class="p">.</span><span class="n">name</span><span class="p">.</span><span class="n">parse</span><span class="p">({</span> <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;distant://1234://some/file.txt&#39;</span> <span class="p">})</span>
+<span class="nb">assert</span><span class="p">(</span><span class="n">pieces</span><span class="p">.</span><span class="n">path</span> <span class="o">==</span> <span class="s1">&#39;some/file.txt&#39;</span><span class="p">)</span>
+<span class="nb">assert</span><span class="p">(</span><span class="n">pieces</span><span class="p">.</span><span class="n">connection</span> <span class="o">==</span> <span class="mi">1234</span><span class="p">)</span>
+<span class="nb">assert</span><span class="p">(</span><span class="n">pieces</span><span class="p">.</span><span class="n">scheme</span> <span class="o">==</span> <span class="s1">&#39;distant&#39;</span><span class="p">)</span>
+</code></pre></div>
+<h2 id="search-api">Search API</h2>
+<p>Alongside the other APIs, the buffer interface also exposes a simplified
+experience in locating buffers by their paths. Specifically, there are three
+methods available:</p>
+<ul>
+<li>
+<p><code>has_matching_path(path, opts)</code>: checks if the buffer has a matching path
+  within its <code>path</code> or <code>alt_paths</code> data. The opts table is optional and can
+  contain a <code>connection</code> field to require that the buffer not only has the
+  specified <code>path</code> but also is the same connection.</p>
+</li>
+<li>
+<p><code>find(opts)</code>: searches through all buffers for one that that meets the
+  specified conditions. If a match is found, a buffer interface is returned for
+  the matched buffer:</p>
+<ul>
+<li><code>opts.path</code>: looks for a buffer with the specified path either as its
+  <code>path</code> or within its <code>alt_paths</code>.</li>
+<li><code>opts.connection</code>: if provided, will limit the search to only buffers
+  with the specified connection id.</li>
+<li><code>opts.format</code>: format of buffer names to search. If not provided, uses
+  <code>name.default_format()</code>.</li>
+</ul>
+</li>
+<li>
+<p><code>find_bufnr(opts)</code>: same as <code>find(opts)</code>, but returns the number of the
+  buffer instead of the buffer interface.</p>
+</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="c1">-- Check if the current buffer is pointing to the specified path for the</span>
+<span class="c1">-- specific connection</span>
+<span class="kr">if</span> <span class="n">plugin</span><span class="p">.</span><span class="n">buf</span><span class="p">.</span><span class="n">has_matching_path</span><span class="p">(</span><span class="s1">&#39;some/file.txt&#39;</span><span class="p">,</span> <span class="p">{</span> <span class="n">connection</span> <span class="o">=</span> <span class="mi">1234</span> <span class="p">})</span> <span class="kr">then</span>
+    <span class="c1">-- Do something</span>
+<span class="kr">end</span>
+
+<span class="c1">-- Search for a buffer, returning nil if nothing found</span>
+<span class="c1">-- The returned buffer has the same buffer interface</span>
+<span class="kd">local</span> <span class="n">buffer</span> <span class="o">=</span> <span class="n">plugin</span><span class="p">.</span><span class="n">buf</span><span class="p">.</span><span class="n">find</span><span class="p">({</span> <span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">connection</span> <span class="o">=</span> <span class="mi">1234</span> <span class="p">})</span>
+<span class="kr">if</span> <span class="n">buffer</span> <span class="kr">then</span>
+    <span class="c1">-- Print out the buffer&#39;s number</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">buffer</span><span class="p">.</span><span class="n">bufnr</span><span class="p">())</span>
+
+    <span class="c1">-- Print out the true path of the buffer</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">buffer</span><span class="p">.</span><span class="n">path</span><span class="p">())</span>
+<span class="kr">end</span>
+
+<span class="c1">-- Retrieves the id of the buffer above, returning nil if not found</span>
+<span class="kd">local</span> <span class="n">bufnr</span> <span class="o">=</span> <span class="n">plugin</span><span class="p">.</span><span class="n">buf</span><span class="p">.</span><span class="n">find_bufnr</span><span class="p">({</span> <span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">connection</span> <span class="o">=</span> <span class="mi">1234</span> <span class="p">})</span>
+</code></pre></div>
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Chip Senkbeil © 2023
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs Insiders
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    <script id="__config" type="application/json">{"base": "../../../..", "features": ["content.code.copy", "navigation.indexes", "navigation.instant", "navigation.instant.prefetch", "navigation.path", "navigation.tabs", "navigation.tracking"], "search": "../../../../assets/javascripts/workers/search.6c7302c4.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../../../assets/javascripts/bundle.7c5c0157.min.js"></script>
+      
+        
+          <script src="../../../../javascripts/asciinema-player.min.js"></script>
+        
+      
+    
+  </body>
+</html>
