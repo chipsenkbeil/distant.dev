@@ -26,7 +26,7 @@ jobs:
           path: .cache
           restore-keys: |
             mkdocs-material-
-      - name: Install Mkdocs & Mkdocs Material
+      - name: Install Mkdocs & Mkdocs Material (static)
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
           COMMIT: a5fefc31c5a5a959044c3ac134314872312c05d6
