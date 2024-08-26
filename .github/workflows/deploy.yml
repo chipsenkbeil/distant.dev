@@ -25,9 +25,9 @@ jobs:
       - name: Install Mkdocs & Mkdocs Material
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
-          COMMIT: fa5bd3f45024328d973977db80cccd5b1df89228
+          COMMIT: a5fefc31c5a5a959044c3ac134314872312c05d6
         run: |
-          pip install git+https://${GH_TOKEN}@github.com/squidfunk/mkdocs-material-insiders.git@${COMMIT}
+          pip install git+https://${GH_TOKEN}@github.com/chipsenkbeil/mkdocs-material-insiders-static.git@${COMMIT}
       - name: Install Mkdocs plugins & dependencies
         run: |
           pip install mkdocs-macros-plugin 
