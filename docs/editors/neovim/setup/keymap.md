@@ -252,6 +252,8 @@ plugin:setup({
 }
 ```
 
+</div>
+
 ### keymap.dir.up
 
 <div class="grid" markdown>
