@@ -238,7 +238,9 @@ plugin:setup({
 === "Value"
 
     String or list of strings where each string represents a key combination
-    that can be performed to trigger the action. **[default: "<C-t\>"]**
+    that can be performed to trigger the action. **[default: "C-t"]**
+
+    *Note this is `<Ctrl-t>` to trigger the action.*
 
 ```lua title="Example"
 {
