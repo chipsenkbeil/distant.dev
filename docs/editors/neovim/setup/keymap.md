@@ -227,6 +227,33 @@ plugin:setup({
 
 </div>
 
+### keymap.dir.tabedit
+
+<div class="grid" markdown>
+
+=== "About"
+
+    Keymap to open the file or directory under the cursor in a new tab.
+
+=== "Value"
+
+    String or list of strings where each string represents a key combination
+    that can be performed to trigger the action. **[default: "C-t"]**
+
+    *Note this is `<Ctrl-t>` to trigger the action.*
+
+```lua title="Example"
+{
+    keymap = {
+        dir = {
+            tabedit = '<C-t>'
+        }
+    }
+}
+```
+
+</div>
+
 ### keymap.dir.up
 
 <div class="grid" markdown>

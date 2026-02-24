@@ -11,23 +11,27 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
+      - uses: actions/checkout@v4
+      - name: Configure Git Credentials
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+      - uses: actions/setup-python@v5
         with:
           python-version: 3.x
       - run: echo "cache_id=$(date --utc '+%V')" >> $GITHUB_ENV 
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           key: mkdocs-material-${{ env.cache_id }}
           path: .cache
           restore-keys: |
             mkdocs-material-
-      - name: Install Mkdocs & Mkdocs Material
+      - name: Install Mkdocs & Mkdocs Material (static)
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
-          COMMIT: fa5bd3f45024328d973977db80cccd5b1df89228
+          COMMIT: a5fefc31c5a5a959044c3ac134314872312c05d6
         run: |
-          pip install git+https://${GH_TOKEN}@github.com/squidfunk/mkdocs-material-insiders.git@${COMMIT}
+          pip install git+https://${GH_TOKEN}@github.com/chipsenkbeil/mkdocs-material-insiders-static.git@${COMMIT}
       - name: Install Mkdocs plugins & dependencies
         run: |
           pip install mkdocs-macros-plugin 

@@ -5,6 +5,9 @@ def value_str(value):
     s = str(value)
     if isinstance(value, bool):
         s = s.lower()
+        return s
+    if isinstance(value, str):
+        return '"' + s + '"'
     return s
 
 def define_env(env):
