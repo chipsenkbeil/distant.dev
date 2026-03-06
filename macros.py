@@ -80,8 +80,6 @@ def define_env(env):
             # ADMONITION START LINE #
             if collapsible:
                 admonition = "???" + ("+" if expanded else "") + " " + admonition
-                if expanded:
-                    admonition += "+"
             else:
                 admonition = "!!! " + admonition
             admonition += ' "'

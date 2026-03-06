@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is the **distant.dev** documentation website for the [Distant](https://github.com/chipsenkbeil/distant) project (remote machine tooling and libraries). Built with MkDocs Material (Insiders Edition) and deployed to Cloudflare Pages via GitHub Actions.
+This is the **distant.dev** documentation website for the [Distant](https://github.com/chipsenkbeil/distant) project (remote machine tooling and libraries). Built with MkDocs Material (Insiders Edition) and deployed to GitHub Pages via GitHub Actions.
 
 ## Build & Serve Commands
 

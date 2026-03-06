@@ -18,30 +18,35 @@ jobs:
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
       - uses: actions/setup-python@v5
         with:
-          python-version: 3.x
-      - run: echo "cache_id=$(date --utc '+%V')" >> $GITHUB_ENV 
+          python-version: "3.12"
+          cache: "pip"
+      - run: echo "cache_id=$(date --utc '+%V')" >> $GITHUB_ENV
       - uses: actions/cache@v4
         with:
           key: mkdocs-material-${{ env.cache_id }}
           path: .cache
           restore-keys: |
             mkdocs-material-
-      - name: Install Mkdocs & Mkdocs Material (static)
+      - name: Configure git credentials for private repo
+        run: |
+          git config --global url."https://${GH_TOKEN}@github.com/".insteadOf "https://github.com/"
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
-          COMMIT: a5fefc31c5a5a959044c3ac134314872312c05d6
+      - name: Install Mkdocs Material (insiders)
         run: |
-          pip install git+https://${GH_TOKEN}@github.com/chipsenkbeil/mkdocs-material-insiders-static.git@${COMMIT}
+          pip install git+https://github.com/chipsenkbeil/mkdocs-material-insiders-static.git@${COMMIT}
+        env:
+          COMMIT: a5fefc31c5a5a959044c3ac134314872312c05d6
       - name: Install Mkdocs plugins & dependencies
         run: |
-          pip install mkdocs-macros-plugin 
-          pip install mkdocs-mermaid2-plugin
-          pip install cairosvg pillow
+          pip install -r requirements.txt
       - name: Install system dependencies
         run: |
           sudo apt-get install -y pngquant
       - name: Install distant (needed for help doc generation)
         run: |
-          curl -L https://sh.distant.dev | sh -s -- --on-conflict fail
-      - name: Redeploy website
+          curl -L https://sh.distant.dev | sh -s -- --distant-version 0.20.0 --on-conflict fail
+      - name: Build site
+        run: mkdocs build --strict
+      - name: Deploy to GitHub Pages
         run: mkdocs gh-deploy --force
