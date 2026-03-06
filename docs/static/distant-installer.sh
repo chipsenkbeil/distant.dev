@@ -21,13 +21,14 @@ DISTANT_REPO="${DISTANT_REPO:-https://github.com/chipsenkbeil/distant}"
 QUIET=
 VERBOSE=
 RUN_AS_ADMIN=
+SKIP_VERIFY=
 
 usage() {
     get_architecture || return 1
     local _arch="$RETVAL"
 
     cat <<EOF
-distant-installer.sh 1.0.0
+distant-installer.sh
 The installer for distant
 
 USAGE:
@@ -62,6 +63,9 @@ OPTIONS:
             Force to run the installer as administrator.
             Normally, if the script is run as root, it will fail; however,
             enabling this option will allow the script to continue.
+
+        --skip-verify
+            Skip checksum verification of the downloaded binary.
 
     -h, --help
             Print help information.
@@ -154,6 +158,10 @@ main() {
                 ;;
             --run-as-admin)
                 RUN_AS_ADMIN=yes
+                shift # past argument
+                ;;
+            --skip-verify)
+                SKIP_VERIFY=yes
                 shift # past argument
                 ;;
             *)
@@ -256,15 +264,22 @@ main() {
         fi
     fi
 
-    # Download and install the binary
+    # Download to a temp file first, then move into place atomically
+    # to prevent partial/corrupt binaries on interrupted downloads
     say "Downloading $_url to $_file" 1>&2
-    ensure downloader "$_url" "$_file" "$_arch"
+    local _tmpfile
+    _tmpfile=$(mktemp)
+    ensure downloader "$_url" "$_tmpfile" "$_arch"
+    if [ ! "$SKIP_VERIFY" = "yes" ]; then
+        verify_checksum "$_tmpfile" "$_url" "$_arch"
+    fi
+    ensure mv "$_tmpfile" "$_file"
     ensure chmod u+x "$_file"
     if [ ! -x "$_file" ]; then
         err "Cannot execute $_file (unexpectedly failed to set permissions)."
     fi
 
-    if [ $_ansi_escapes_are_valid ] && [ ! "$QUIET" = "yes" ] ; then
+    if [ "$_ansi_escapes_are_valid" = true ] && [ ! "$QUIET" = "yes" ] ; then
         # NOTE: Need to do it this way for ansi escapes to work
         # \33[ is escape; 0m is default fg color; 32m is dark green fg color
         printf "\33[32mDistant was installed successfully!\33[0m\n" 1>&2
@@ -624,6 +639,70 @@ ignore() {
     "$@"
 }
 
+# Verify the checksum of a downloaded file.
+# Tries BLAKE2 (.b2) first, then SHA256 (.sha256, .sha256sum).
+#
+# Arguments:
+#   1. file: path to the downloaded file
+#   2. url: the URL the file was downloaded from (checksum URL derived from this)
+#   3. arch: platform triple (passed through to downloader)
+verify_checksum() {
+    local _file="$1"
+    local _url="$2"
+    local _arch="$3"
+
+    # Try BLAKE2 first
+    if check_cmd b2sum; then
+        local _checksum_url="${_url}.b2"
+        local _tmpsum
+        _tmpsum=$(mktemp)
+        if downloader "$_checksum_url" "$_tmpsum" "$_arch" 2>/dev/null; then
+            local _expected
+            _expected=$(cut -d' ' -f1 < "$_tmpsum")
+            local _actual
+            _actual=$(b2sum "$_file" | cut -d' ' -f1)
+            rm -f "$_tmpsum"
+            if [ "$_actual" != "$_expected" ]; then
+                err "BLAKE2 checksum verification failed (expected $_expected, got $_actual)"
+            fi
+            say "Checksum verified (BLAKE2)"
+            return 0
+        fi
+        rm -f "$_tmpsum"
+    fi
+
+    # Fall back to SHA256 (.sha256 then .sha256sum)
+    local _sha_cmd=""
+    if check_cmd sha256sum; then
+        _sha_cmd="sha256sum"
+    elif check_cmd shasum; then
+        _sha_cmd="shasum -a 256"
+    fi
+
+    if [ -n "$_sha_cmd" ]; then
+        for _ext in .sha256 .sha256sum; do
+            local _checksum_url="${_url}${_ext}"
+            local _tmpsum
+            _tmpsum=$(mktemp)
+            if downloader "$_checksum_url" "$_tmpsum" "$_arch" 2>/dev/null; then
+                local _expected
+                _expected=$(cut -d' ' -f1 < "$_tmpsum")
+                local _actual
+                _actual=$($_sha_cmd "$_file" | cut -d' ' -f1)
+                rm -f "$_tmpsum"
+                if [ "$_actual" != "$_expected" ]; then
+                    err "SHA256 checksum verification failed (expected $_expected, got $_actual)"
+                fi
+                say "Checksum verified (SHA256)"
+                return 0
+            fi
+            rm -f "$_tmpsum"
+        done
+    fi
+
+    say "Warning: could not verify checksum (no checksum file found or no hash tool available)"
+}
+
 # This wraps curl or wget. Tries curl and then wget.
 #
 # Arguments are either:
@@ -750,13 +829,11 @@ check_help_for() {
                         return 1
                     fi
                     ;;
-                11.*)
-                    # We assume Big Sur will be OK for now
+                11.* | 12.* | 13.* | 14.* | 15.* | 16.*)
+                    # macOS 11 (Big Sur) and later all support modern TLS
                     ;;
                 *)
-                    # Unknown product version, warn and continue
-                    echo "Warning: Detected unknown macOS major version: $(sw_vers -productVersion)"
-                    echo "Warning TLS capabilities detection may fail"
+                    # Unknown future macOS version, assume it supports modern TLS
                     ;;
             esac
         fi

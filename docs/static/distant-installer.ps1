@@ -59,6 +59,8 @@
     Use the credentials of the current user for the proxy server that is specified by the -Proxy parameter.
 .PARAMETER RunAsAdmin
     Force to run the installer as administrator.
+.PARAMETER SkipVerify
+    Skip checksum verification of the downloaded binary.
 .LINK
     https://distant.dev
 .LINK
@@ -73,7 +75,8 @@ param(
     [Uri] $Proxy,
     [System.Management.Automation.PSCredential] $ProxyCredential,
     [Switch] $ProxyUseDefaultCredentials,
-    [Switch] $RunAsAdmin
+    [Switch] $RunAsAdmin,
+    [Switch] $SkipVerify
 )
 
 # Disable StrictMode in this script
@@ -181,7 +184,6 @@ function Test-Prerequisite {
     }
 
     # distant installer requires TLS 1.2 SecurityProtocol, which exists in .NET Framework 4.5+
-    # TODO: Do we need this for the installer? Leftover from modifying scoop installer!
     if ([System.Enum]::GetNames([System.Net.SecurityProtocolType]) -notcontains 'Tls12') {
         Deny-Install "distant installer requires .NET Framework 4.5+ to work. Go to https://microsoft.com/net/download to get the latest version of .NET Framework."
     }
@@ -242,9 +244,9 @@ function Optimize-SecurityProtocol {
 
     # If not, change it to support TLS 1.2
     if (!($isNewerNetFramework -and $isSystemDefault)) {
-        # Set to TLS 1.2 (3072), then TLS 1.1 (768), and TLS 1.0 (192). Ssl3 has been superseded,
+        # Set to TLS 1.2 only. TLS 1.0 and 1.1 are deprecated.
         # https://docs.microsoft.com/en-us/dotnet/api/system.net.securityprotocoltype?view=netframework-4.5
-        [System.Net.ServicePointManager]::SecurityProtocol = 3072 -bor 768 -bor 192
+        [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12
         Write-Verbose "SecurityProtocol has been updated to support TLS 1.2"
     }
 }
@@ -418,10 +420,44 @@ function Install-Distant {
     # Initialize the downloader to get our binary
     $downloader = Get-Downloader
 
-    # Download our binary into the install directory
+    # Download to a temp file first, then move into place atomically
+    $tmpPath = [System.IO.Path]::GetTempFileName()
     Write-InstallInfo "Downloading $downloadUrl to $downloadPath"
-    $downloader.DownloadFile($downloadUrl, $downloadPath)
-    $downloader.Dispose()
+    try {
+        $downloader.DownloadFile($downloadUrl, $tmpPath)
+    } finally {
+        $downloader.Dispose()
+    }
+
+    # Verify checksum
+    if (-not $SkipVerify) {
+        $verified = $false
+        foreach ($ext in @(".sha256", ".sha256sum")) {
+            try {
+                $checksumDownloader = Get-Downloader
+                try {
+                    $checksumUrl = "$downloadUrl$ext"
+                    $expectedHash = ($checksumDownloader.DownloadString($checksumUrl)).Split(" ")[0].Trim()
+                    $actualHash = (Get-FileHash -Path $tmpPath -Algorithm SHA256).Hash.ToLower()
+                    if ($actualHash -ne $expectedHash) {
+                        Remove-Item -Force $tmpPath
+                        Deny-Install "SHA256 checksum verification failed! Expected: $expectedHash, Got: $actualHash"
+                    }
+                    Write-InstallInfo "Checksum verified (SHA256)"
+                    $verified = $true
+                    break
+                } finally {
+                    $checksumDownloader.Dispose()
+                }
+            } catch { }
+        }
+        if (-not $verified) {
+            Write-InstallInfo "Warning: could not verify checksum (no checksum file found)" -ForegroundColor DarkYellow
+        }
+    }
+
+    # Move temp file into final location
+    Move-Item -Force $tmpPath $downloadPath
 
     # Ensure distant binary is in the PATH
     Add-BinDirToPath
@@ -446,10 +482,12 @@ $ON_CONFLICT        = $OnConflict, $env:DISTANT_ON_CONFLICT, "Ask" | Where-Objec
 $oldErrorActionPreference = $ErrorActionPreference
 $ErrorActionPreference = 'Stop'
 
-# Logging debug info
-Write-DebugInfo $PSBoundParameters
-# Bootstrap function
-Install-Distant
-
-# Reset $ErrorActionPreference to original value
-$ErrorActionPreference = $oldErrorActionPreference
+try {
+    # Logging debug info
+    Write-DebugInfo $PSBoundParameters
+    # Bootstrap function
+    Install-Distant
+} finally {
+    # Reset $ErrorActionPreference to original value
+    $ErrorActionPreference = $oldErrorActionPreference
+}
